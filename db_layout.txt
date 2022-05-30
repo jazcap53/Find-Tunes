@@ -1,0 +1,38 @@
+person
+======
+person_id *
+person_name NN
+aka_name
+
+action
+======
+action_id *
+did_what NN
+
+person_action
+=============
+person_action_id *
+action_id F->Action
+person_id F->Person
+
+release
+=======
+release_id *
+title NN
+
+song_release
+============
+song_release_id *
+release_id F->Release
+song_id F->Song
+
+song
+====
+song_id *
+name NN
+
+SELECT title FROM release JOIN song_release ON release.release_id = song_release.release_id 
+                          JOIN song ON song.song_id = song_release.song_id
+WHERE song.name = ?
+
+
