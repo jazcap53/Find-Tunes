@@ -15,7 +15,7 @@ def get_all_releases():
     all_releases = []
     outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
     print(f'\ngetting page {pg}: ', end='')
-    # print(r.status_code)
+    # print(outer_r.status_code)
     got_release_ct = False
     
     while outer_r.status_code == 200:
@@ -47,12 +47,11 @@ def get_all_releases():
         pg += 1
         outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
         print(f'\ngetting page {pg}: ', end='')
-        # print(r.status_code)
+        # print(outer_r.status_code)
     print(f'{len(all_releases)} items found')
 
 
 def get_one_release(url):
-    # elem = 1
     sleep(1.5)
     print(f'in get_one_release({url})')
     inner_r = requests.get(url)
