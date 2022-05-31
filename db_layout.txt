@@ -31,8 +31,22 @@ song_release_id *
 release_id F->Release
 song_id F->Song
 
+person_release
+==============
+person_release_id *
+person_id F->Person
+release_id F->Release
+
+
+-- get all releases that contain a particular song
 SELECT release_title FROM release JOIN song_release ON release.release_id = song_release.release_id 
                                   JOIN song ON song.song_id = song_release.song_id
 WHERE song.song_title = ?
 
+-- get all releases where Richard Penniman plays piano
+SELECT release_title FROM release JOIN person_release ON release.release_id = person_release.release_id
+                                  JOIN person ON person.person_id = person_release.person_id
+                                  JOIN person_action ON person_action.person_id = person.person_id
+WHERE (person.name = 'richard penniman' or person.aka = 'richard penniman') and person_action.did_what = 'piano';
+                                  
 
