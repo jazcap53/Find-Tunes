@@ -7,8 +7,8 @@ DROP TABLE IF EXISTS tu_person CASCADE;
 
 CREATE TABLE tu_person (
     person_id SERIAL UNIQUE,
-    name varchar(120) NOT NULL,
-    aka varchar(120),
+    person_name varchar(120) NOT NULL,
+    person_aka varchar(120),
     PRIMARY KEY (person_id)
 );
 
