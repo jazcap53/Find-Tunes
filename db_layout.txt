@@ -15,10 +15,15 @@ person_action_id *
 action_id F->Action
 person_id F->Person
 
+song
+====
+song_id *
+song_title NN
+
 release
 =======
 release_id *
-title NN
+release_title NN
 
 song_release
 ============
@@ -26,13 +31,8 @@ song_release_id *
 release_id F->Release
 song_id F->Song
 
-song
-====
-song_id *
-name NN
-
-SELECT title FROM release JOIN song_release ON release.release_id = song_release.release_id 
-                          JOIN song ON song.song_id = song_release.song_id
-WHERE song.name = ?
+SELECT release_title FROM release JOIN song_release ON release.release_id = song_release.release_id 
+                                  JOIN song ON song.song_id = song_release.song_id
+WHERE song.song_title = ?
 
 
