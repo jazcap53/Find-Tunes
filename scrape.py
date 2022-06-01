@@ -71,8 +71,20 @@ def get_one_release(url):
                         continue
                     if table_data['class'][0] == 'trackPos_2RCje':
                         track_pos_string = table_data.string
+                        if not track_pos_string:
+                            table_data_span = table_data.find('span')
+                            if not table_data_span or not table_data_span.get('class'):
+                                continue
+                            if table_data_span['class'][0] == 'trackPos_2RCje':
+                                track_pos_string = table_data_span.string
                     elif table_data['class'][0] == 'duration_2t4qr':
                         track_duration_string = table_data.string
+                        if not track_duration_string:
+                            table_data_span = table_data.find('span')
+                            if not table_data_span or not table_data_span.get('class'):
+                                continue
+                            if table_data_span['class'][0] == 'duration_2t4qr':
+                                track_duration_string = table_data_span.string
                     elif table_data['class'][0] == 'trackTitle_CTKp4':
                         table_data_span = table_data.find('span')
                         if not table_data_span or not table_data_span.get('class'):
