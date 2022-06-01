@@ -86,11 +86,20 @@ def get_one_release(url):
                             if table_data_span['class'][0] == 'duration_2t4qr':
                                 track_duration_string = table_data_span.string
                     elif table_data['class'][0] == 'trackTitle_CTKp4':
-                        table_data_span = table_data.find('span')
-                        if not table_data_span or not table_data_span.get('class'):
-                            continue
-                        if table_data_span['class'][0] == 'trackTitle_CTKp4':
-                            track_title_string = table_data_span.string
+                        track_title_string = table_data.string
+                        if not track_title_string:
+                            table_data_span = table_data.find('span')
+                            if not table_data_span or not table_data_span.get('class'):
+                                continue
+                            if table_data_span['class'][0] == 'trackTitle_CTKp4':
+                                track_title_string = table_data_span.string
+
+
+                        # table_data_span = table_data.find('span')
+                        # if not table_data_span or not table_data_span.get('class'):
+                        #     continue
+                        # if table_data_span['class'][0] == 'trackTitle_CTKp4':
+                        #     track_title_string = table_data_span.string
                 if track_pos_string and track_title_string:
                     track_data = (track_pos_string, track_title_string, track_duration_string)
                     print(*track_data)
