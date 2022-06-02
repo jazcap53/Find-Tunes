@@ -3,50 +3,48 @@
 -- 2022-05-31
 
 
-CREATE OR REPLACE FUNCTION tu_insert_person(new_person_name varchar,
-    new_person_aka varchar) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION tu_insert_song(new_song_title varchar) RETURNS text AS $$
 DECLARE
-  tu_person_row tu_person%ROWTYPE;
+  tu_song_row tu_song%ROWTYPE;
 
 BEGIN
-    SELECT * INTO tu_person_row FROM tu_person WHERE person_name = new_person_name AND
-                                                   person_aka = new_person_aka;
+    SELECT * INTO tu_song_row FROM tu_song WHERE song_title = new_song_title;
 
     IF FOUND THEN
-        RETURN 'tu_insert_person() failed: row already in table';
+        RETURN 'tu_insert_song() failed: row already in table';
     END IF;
 
-    INSERT INTO tu_person (person_id, person_name, person_aka)
-    values (nextval('tu_person_person_id_seq'), new_person_name, new_person_aka);
+    INSERT INTO tu_song (song_id, song_title)
+    values (nextval('tu_song_song_id_seq'), new_song_title);
 
-    RETURN 'tu_insert_person() succeeded';
+    RETURN 'tu_insert_song() succeeded';
 
     EXCEPTION
         WHEN OTHERS THEN
-            RETURN 'error inserting person into db';
+            RETURN 'error inserting song into db';
 END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION tu_insert_action(new_did_what varchar) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION tu_insert_release(new_discogs_release_id bigint, new_discogs_release_string varchar) RETURNS text AS $$
 DECLARE
-    tu_action_row tu_action%ROWTYPE;
+    tu_release_row tu_release%ROWTYPE;
 
 BEGIN
-    SELECT * INTO tu_action_row FROM tu_action WHERE did_what = new_did_what;
+    SELECT * INTO tu_release_row FROM tu_release WHERE release_id = new_release_id;
 
     IF FOUND THEN
-        RETURN 'tu_insert_action() failed: row already in table';
+        RETURN 'tu_insert_release() failed: row already in table';
     END IF;
 
-    INSERT INTO tu_action (action_id, did_what)
-    values (nextval('tu_action_action_id_seq'), new_did_what);
+    INSERT INTO tu_release (release_id, discogs_release_id, discogs_release_string)
+    values (nextval('tu_release_release_id_seq'), new_discogs_release_id, new_discogs_release_string);
 
-    RETURN 'tu_insert_action succeeded';
+    RETURN 'tu_insert_release succeeded';
 
     EXCEPTION
         WHEN OTHERS THEN
-            RETURN 'error inserting action into db';
+            RETURN 'error inserting release into db';
 END;
 $$ LANGUAGE plpgsql;
 
