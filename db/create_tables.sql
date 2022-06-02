@@ -51,9 +51,9 @@ DROP TABLE IF EXISTS tu_release CASCADE;
 CREATE TABLE tu_release (
     release_id SERIAL UNIQUE,
     discogs_release_id bigint NOT NULL,
-    release_title varchar(120) NOT NULL,
+    discogs_release_string varchar(240) NOT NULL,
     PRIMARY KEY (release_id),
-    CONSTRAINT lowercase CHECK (release_title = lower(release_title))
+    CONSTRAINT lowercase CHECK (discogs_release_string = lower(discogs_release_string))
 );
 
 
