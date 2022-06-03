@@ -36,8 +36,13 @@ def get_all_releases():
             if destination and destination.startswith('/release/') and destination[9].isdigit():
                 print('\n' + destination)
                 all_releases.append(destination)
+                discogs_release_id, discogs_release_string = parse_dest(destination)
+                # yield discogs_release_id, discogs_release_string
+
                 inner_url = 'https://www.discogs.com' + destination
-                get_one_release(inner_url)
+                itr = get_one_release(discogs_release_id, discogs_release_string, inner_url)  # DO NOT DELETE
+                while (all_query_params := next(itr)):
+                    yield all_query_params
 
         if len(all_releases) >= n_releases:
             break
@@ -48,7 +53,7 @@ def get_all_releases():
     print(f'{len(all_releases)} items found')
 
 
-def get_one_release(url):
+def get_one_release(dscg_rel_id, dscg_rel_str, url):
     sleep(1.5)
     inner_r = requests.get(url)
     inner_soup = BeautifulSoup(inner_r.text, 'html.parser')
@@ -73,8 +78,9 @@ def get_one_release(url):
                     elif table_data['class'][0] == 'trackTitle_CTKp4':
                         track_title_string = get_track_string(table_data)
                 if track_pos_string and track_title_string:
-                    track_data = (track_pos_string, track_title_string, track_duration_string)
+                    track_data = (str(track_pos_string).lower(), str(track_title_string).lower(), str(track_duration_string).lower())
                     print(*track_data)
+                    yield (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
 
 
 def get_track_string(td):
@@ -84,6 +90,15 @@ def get_track_string(td):
         if td_span and td_span.get('class'):
             s = td_span.string
     return s
+
+
+def parse_dest(dest: str):
+    # breakpoint()
+    partitioned_one = dest[1:].partition('/')  # 'result' '/'  'song-number-and-title'
+    partitioned_two = partitioned_one[2].partition('-')  # 'song-number' '/' 'song-title'
+    dscg_id = int(partitioned_two[0])
+    dscg_title = partitioned_two[2]
+    return dscg_id, dscg_title
 
 
 if __name__ == '__main__':

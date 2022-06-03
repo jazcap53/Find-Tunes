@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS tu_song CASCADE;
 
 CREATE TABLE tu_song (
     song_id SERIAL UNIQUE,
-    song_title varchar(120) NOT NULL,
+    song_title varchar(120) NOT NULL UNIQUE,
     PRIMARY KEY (song_id),
     CONSTRAINT lowercase CHECK (song_title = lower(song_title))
 );
