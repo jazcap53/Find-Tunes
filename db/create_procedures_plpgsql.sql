@@ -62,13 +62,18 @@ DECLARE
 	tu_release_row tu_release%ROWTYPE;
     tu_song_id integer;
     tu_release_id integer;
+    dummy tu_song%ROWTYPE;
 
 BEGIN
-	-- insert into the tu_song table
-	INSERT INTO tu_song(song_title) 
-	VALUES(new_track_title_str) 
-	RETURNING song_id INTO tu_song_id;
-	
+    SELECT * INTO dummy FROM tu_song WHERE song_title = new_track_title_str;
+
+    IF NOT FOUND THEN
+	    -- insert into the tu_song table
+	    INSERT INTO tu_song(song_title) 
+	    VALUES(new_track_title_str) 
+	    RETURNING song_id INTO tu_song_id;
+    END IF;
+
 	-- insert into the tu_release table
 	INSERT INTO tu_release(discogs_release_id, discogs_release_string)
 	VALUES(new_discogs_release_id, new_discogs_release_string)
