@@ -16,10 +16,10 @@ def connect():
         conn = psycopg2.connect(**params)
         # breakpoint()
         cur = conn.cursor()
-        
+        query_params_itr = get_query_params(get_all_releases())
         while True:
-            query_params_itr = get_query_params(get_all_releases())
             query_params = next(query_params_itr)
+            # breakpoint()
         # discogs_release_id, discogs_release_string, 
         # track_pos_str, track_title_str, track_duration_str
             cur.execute("CALL tu_insert_all(%s, %s, %s, %s, %s)", (query_params))
