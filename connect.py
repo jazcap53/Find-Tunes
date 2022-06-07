@@ -14,21 +14,24 @@ def connect():
         params = config()
         print('connecting to the db')
         conn = psycopg2.connect(**params)
-        # breakpoint()
+        conn.autocommit = True
+        
         cur = conn.cursor()
         query_params_itr = get_query_params(get_all_releases())
+        print(f'the type of query_params_itr is {type(query_params_itr)}')
         while True:
+            breakpoint()
             query_params = next(query_params_itr)
-            # breakpoint()
-        # discogs_release_id, discogs_release_string, 
-        # track_pos_str, track_title_str, track_duration_str
+            # discogs_release_id, discogs_release_string, 
+            # track_pos_str, track_title_str, track_duration_str
             cur.execute("CALL tu_insert_all(%s, %s, %s, %s, %s)", (query_params))
 
         # conn.commit()
 
         # cur.close()
     except StopIteration:
-        conn.commit()
+        print('reached StopIteration in connect()')
+        # conn.commit()
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
@@ -41,7 +44,7 @@ def connect():
 def get_query_params(itr):
     # discogs_release_id, discogs_release_string, track_pos_string, track_title_string, track_duration_string = next(itr)
     query_params = next(itr)
-    # breakpoint()
+    
     # params = (discogs_release_id, discogs_release_string, track_pos_string, track_title_string, track_duration_string)
     yield query_params
 

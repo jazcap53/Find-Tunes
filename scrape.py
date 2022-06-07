@@ -10,12 +10,14 @@ import requests
 
 
 def get_all_releases():
+    print('in get_all_releases()')
     pg = 1
     all_releases = []
     outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
     print(f'\ngetting page {pg}: ', end='')
     got_release_ct = False
-    
+
+    itr = None
     while outer_r.status_code == 200:
         printed_release_ct = False
         outer_soup = BeautifulSoup(outer_r.text, 'html.parser')
@@ -34,15 +36,25 @@ def get_all_releases():
         for link in outer_soup.find_all('a'):
             destination = link.get('href')
             if destination and destination.startswith('/release/') and destination[9].isdigit():
-                print('\n' + destination)
+                print(f'\nin get_all_releases(), destination is {destination}')
                 all_releases.append(destination)
                 discogs_release_id, discogs_release_string = parse_dest(destination)
-                # yield discogs_release_id, discogs_release_string
+                # yield discogs_release_id, discogs_release_string  # commenting this in results in a tuple index error (from the db ?)
 
                 inner_url = 'https://www.discogs.com' + destination
-                itr = get_one_release(discogs_release_id, discogs_release_string, inner_url)  # DO NOT DELETE
-                while (all_query_params := next(itr)):
-                    yield all_query_params
+                if itr is None:
+                    print('creating itr')
+                    itr = get_one_release(discogs_release_id, discogs_release_string, inner_url)  # DO NOT DELETE
+                
+                while True:
+                    try:
+                        all_query_params = next(itr)
+                        print(f'in get_all_releases(), in inner while loop, all_query_params is {all_query_params}')
+                        yield all_query_params
+                    except StopIteration:
+                        print('reached StopIteration in get_all_releases()')
+                        print('looking for next <anchor> link')
+                        break
 
         if len(all_releases) >= n_releases:
             break
@@ -79,9 +91,10 @@ def get_one_release(dscg_rel_id, dscg_rel_str, url):
                         track_title_string = get_track_string(table_data)
                 if track_pos_string and track_title_string:
                     track_data = (str(track_pos_string).lower(), str(track_title_string).lower(), str(track_duration_string).lower())
-                    print(*track_data)
-                    yield (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
-
+                    tuple_to_yield = (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
+                    print(f'in get_one_release(), tuple_to_yield is {tuple_to_yield}')
+                    # yield (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
+                    yield tuple_to_yield
 
 def get_track_string(td):
     s = td.string
@@ -93,7 +106,7 @@ def get_track_string(td):
 
 
 def parse_dest(dest: str):
-    # breakpoint()
+    
     partitioned_one = dest[1:].partition('/')  # 'result' '/'  'song-number-and-title'
     partitioned_two = partitioned_one[2].partition('-')  # 'song-number' '/' 'song-title'
     dscg_id = int(partitioned_two[0])
@@ -102,4 +115,6 @@ def parse_dest(dest: str):
 
 
 if __name__ == '__main__':
-    get_all_releases()
+    
+    print('if __name__ block')
+    print(get_all_releases())
