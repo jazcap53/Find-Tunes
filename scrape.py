@@ -39,7 +39,7 @@ def get_all_releases():
                 # print(f'\nin get_all_releases(), destination is {destination}')
                 all_releases.append(destination)
                 discogs_release_id, discogs_release_string = parse_dest(destination)
-                yield discogs_release_id, discogs_release_string  # commenting this in results in a tuple index error (from the db ?)
+                # yield discogs_release_id, discogs_release_string  # commenting this in results in a tuple index error (from the db ?)
 
                 inner_url = 'https://www.discogs.com' + destination
                 if itr is None:
@@ -50,7 +50,8 @@ def get_all_releases():
                     try:
                         all_query_params = next(itr)
                         # print(f'in get_all_releases(), in inner while loop, all_query_params is {all_query_params}')
-                        # yield all_query_params
+                        yield all_query_params
+                        # return all_query_params
                     except StopIteration:
                         # print('reached StopIteration in get_all_releases()')
                         # print('looking for next <anchor> link')
@@ -94,7 +95,7 @@ def get_one_release(dscg_rel_id, dscg_rel_str, url):
                     track_data = (str(track_pos_string).lower(), str(track_title_string).lower(), str(track_duration_string).lower())
                     tuple_to_yield = (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
                     # print(f'in get_one_release(), tuple_to_yield is {tuple_to_yield}')
-                    print(tuple_to_yield)
+                    print(f'in get_one_release(), yielding {tuple_to_yield}')
                     # yield (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
                     yield tuple_to_yield
 

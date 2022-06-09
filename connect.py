@@ -6,7 +6,7 @@
 import psycopg2
 from config import config
 
-from scrape import get_all_releases
+from scrape import get_all_releases, get_one_release
 
 def connect():
     conn = None
@@ -17,14 +17,16 @@ def connect():
         conn.autocommit = True
         
         cur = conn.cursor()
-        query_params_itr = get_query_params(get_all_releases())
-        print(f'the type of query_params_itr is {type(query_params_itr)}')
+        # query_params_itr = get_query_params(itr := get_all_releases())
+        query_params = get_query_params(itr := get_all_releases())
+        # print(f'the type of query_params_itr is {type(query_params_itr)}')
+        print(f'the type of query_params is {type(query_params)}')
         while True:
-            breakpoint()
-            query_params = next(query_params_itr)
+            # breakpoint()
             # discogs_release_id, discogs_release_string, 
             # track_pos_str, track_title_str, track_duration_str
             cur.execute("CALL tu_insert_all(%s, %s, %s, %s, %s)", (query_params))
+            query_params = get_query_params(itr)
 
         # conn.commit()
 
@@ -46,7 +48,7 @@ def get_query_params(itr):
     query_params = next(itr)
     
     # params = (discogs_release_id, discogs_release_string, track_pos_string, track_title_string, track_duration_string)
-    yield query_params
+    return query_params
 
 
 if __name__ == '__main__':
