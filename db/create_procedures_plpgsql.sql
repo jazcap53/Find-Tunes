@@ -28,6 +28,9 @@ BEGIN
 	    VALUES(new_track_title_str) 
 	    RETURNING song_id INTO tu_song_id;
     -- END IF;
+    ELSE
+        SELECT song_id INTO tu_song_id FROM tu_song WHERE tu_song.song_title = new_track_title_str;
+    END IF;
 
         SELECT * INTO dummy_release FROM tu_release WHERE discogs_release_id = new_discogs_release_id;
 
@@ -36,7 +39,9 @@ BEGIN
 	        INSERT INTO tu_release(discogs_release_id, discogs_release_string)
 	        VALUES(new_discogs_release_id, new_discogs_release_string)
 	        RETURNING release_id INTO tu_release_id;
-    -- END IF;
+        ELSE
+            SELECT release_id INTO tu_release_id FROM tu_release WHERE discogs_release_id = new_discogs_release_id;
+        END IF;
 	
         SELECT * INTO dummy_song_release FROM tu_song_release WHERE song_id = tu_song_id AND release_id = tu_release_id;
 
@@ -45,8 +50,8 @@ BEGIN
 	        INSERT INTO tu_song_release(song_id, release_id)
 	        VALUES(tu_song_id, tu_release_id);
         END IF;
-    END IF;
-END IF;
+    -- END IF;
+-- END IF;
 END;
 $$
 LANGUAGE PLPGSQL;
