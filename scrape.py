@@ -121,7 +121,7 @@ def cleanup_title_string(title):
     trans_dict = {}
     for c in punct:
         if c == '&':
-            trans_dict[c] = ' and '
+            trans_dict[c] = 'and'
         else:
             trans_dict[c] = ''
     trans_table = str.maketrans(trans_dict)
