@@ -3,6 +3,7 @@
 # 2022-05-27
 
 
+import string
 from time import sleep
 
 from bs4 import BeautifulSoup
@@ -36,25 +37,18 @@ def get_all_releases():
         for link in outer_soup.find_all('a'):
             destination = link.get('href')
             if destination and destination.startswith('/release/') and destination[9].isdigit():
-                # print(f'\nin get_all_releases(), destination is {destination}')
                 all_releases.append(destination)
                 discogs_release_id, discogs_release_string = parse_dest(destination)
-                # yield discogs_release_id, discogs_release_string  # commenting this in results in a tuple index error (from the db ?)
 
                 inner_url = 'https://www.discogs.com' + destination
                 if itr is None:
-                    # print('creating itr')
                     itr = get_one_release(discogs_release_id, discogs_release_string, inner_url)  # DO NOT DELETE
                 
                 while True:
                     try:
                         all_query_params = next(itr)
-                        # print(f'in get_all_releases(), in inner while loop, all_query_params is {all_query_params}')
                         yield all_query_params
-                        # return all_query_params
                     except StopIteration:
-                        # print('reached StopIteration in get_all_releases()')
-                        # print('looking for next <anchor> link')
                         itr = None
                         break
                         
@@ -91,12 +85,11 @@ def get_one_release(dscg_rel_id, dscg_rel_str, url):
                         track_duration_string = get_track_string(table_data)
                     elif table_data['class'][0] == 'trackTitle_CTKp4':
                         track_title_string = get_track_string(table_data)
+                        track_title_string = cleanup_title_string(track_title_string)
                 if track_pos_string and track_title_string:
                     track_data = (str(track_pos_string).lower(), str(track_title_string).lower(), str(track_duration_string).lower())
                     tuple_to_yield = (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
-                    # print(f'in get_one_release(), tuple_to_yield is {tuple_to_yield}')
                     print(f'in get_one_release(), yielding {tuple_to_yield}')
-                    # yield (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
                     yield tuple_to_yield
 
 def get_track_string(td):
@@ -114,6 +107,27 @@ def parse_dest(dest: str):
     dscg_id = int(partitioned_two[0])
     dscg_title = partitioned_two[2]
     return dscg_id, dscg_title
+
+
+def cleanup_title_string(title):
+    if not title:
+        return title
+
+    if (l_paren_posn := title.find('(')) != -1:
+        if (r_paren_posn := title.find(')')) != -1:
+            if r_paren_posn > l_paren_posn:
+                title = title[:l_paren_posn] + title[r_paren_posn + 1: ]
+    punct = string.punctuation
+    trans_dict = {}
+    for c in punct:
+        if c == '&':
+            trans_dict[c] = ' and '
+        else:
+            trans_dict[c] = ''
+    trans_table = str.maketrans(trans_dict)
+    title = title.translate(trans_table)
+    
+    return title.strip()
 
 
 if __name__ == '__main__':
