@@ -66,7 +66,7 @@ def get_search_string(selection: int) -> str:
             search_string = cleanup_title_string(title).lower()
             yes_no = input(f'I will search for \'{search_string}\', ok? [Y/n])').strip().lower()
             if not yes_no:
-                yes_no = 'y' 
+                yes_no = 'y'
             elif yes_no == 'y':
                 pass
             elif yes_no == 'n':
