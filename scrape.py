@@ -11,7 +11,6 @@ import requests
 
 
 def get_all_releases():
-    print('in get_all_releases()')
     pg = 1
     all_releases = []
     outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
