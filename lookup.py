@@ -29,8 +29,9 @@ def select_search_type() -> int:
     """
     selection = int(input('\tEnter 1 to search by song title,\n'
                           '\tEnter 2 to search by band/leader name,\n'
+                          '\tEnter 3 to search by partial song title,\n'
                           '\tEnter 0 to quit:\n').strip() or '0')
-    while not 0 <= selection < 3:
+    while not 0 <= selection < 4:
         selection = int(input('\t').strip())
     return selection
 
@@ -46,7 +47,8 @@ def get_search_string(selection: int) -> str:
         while not yes_no or yes_no[0] not in 'ynq':
             title = input('What song title do you want to look up? ')
             search_string = cleanup_title_string(title).lower()
-            yes_no = input(f'I will search for \'{search_string}\', ok? [Y/n])').strip().lower()
+            if search_string:
+                yes_no = input(f'I will search for \'{search_string}\', ok? [Y/n])').strip().lower()
             if not yes_no:
                 yes_no = 'y'
             elif yes_no == 'y':
@@ -57,6 +59,22 @@ def get_search_string(selection: int) -> str:
                 search_string = ''
     elif selection == 2:
         search_string = 'N.Y.I.'
+    elif selection == 3:
+        yes_no = None
+        while not yes_no or yes_no[0] not in 'ynq':
+            title = input('What partial song title do you want to look up? ')
+            search_string = cleanup_title_string(title).lower()
+            yes_no = input(f'I will search for \'{search_string}\', ok? [Y/n])').strip().lower()
+            if not yes_no:
+                yes_no = 'y' 
+            elif yes_no == 'y':
+                pass
+            elif yes_no == 'n':
+                yes_no = None
+            elif yes_no == 'q':
+                search_string = ''
+        if search_string:
+            search_string = '%' + search_string + '%'
     return search_string
 
 
