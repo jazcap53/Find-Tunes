@@ -3,14 +3,15 @@
 # 2022-06-01
 
 
+from config import config
 import psycopg2
 
-from config import config
+from queries import return_query
 from scrape import cleanup_title_string
 
 
-def lookup():
-    search_type = select_search()
+def lookup() -> None:
+    search_type = select_search_type()
     search_string = get_search_string(search_type)
     if search_string == 'N.Y.I.':
         print(search_string)
@@ -18,10 +19,14 @@ def lookup():
     if not search_string:
         print('Goodbye!!!')
         return
-    call_db(search_string)
+    query = return_query(search_type)
+    call_db(query, search_string)
 
 
-def select_search():
+def select_search_type() -> int:
+    """
+    Return an int, selected by the user, representing the search type
+    """
     selection = int(input('\tEnter 1 to search by song title,\n'
                           '\tEnter 2 to search by band/leader name,\n'
                           '\tEnter 0 to quit:\n').strip() or '0')
@@ -30,7 +35,10 @@ def select_search():
     return selection
 
 
-def get_search_string(selection: int):
+def get_search_string(selection: int) -> str:
+    """
+    Return a str representing the item the user is searching for
+    """
     if not selection:
         search_string = ''
     elif selection == 1:
@@ -52,29 +60,20 @@ def get_search_string(selection: int):
     return search_string
 
 
-def call_db(search_string):
+def call_db(query,  query_param):
     conn = None
     try:
         params = config()
         print('\nconnecting to the db')
         conn = psycopg2.connect(**params)
         cur = conn.cursor()
-        query_param = search_string
-        query = '''
-        SELECT r.discogs_release_string
-        FROM tu_release r
-        JOIN tu_song_release sr
-        ON r.release_id = sr.release_id
-        JOIN tu_song s
-        ON s.song_id = sr.song_id
-        WHERE s.song_title = %s;
-        '''
+
         cur.execute(query, (query_param,))
         results = cur.fetchall()
         if not results:
-            print(f'\n{search_string} not found in the db\n')
+            print(f'\n{query_param} not found in the db\n')
         else:
-            print(f'\n{search_string} found in:')
+            print(f'\n{query_param} found in:')
             for result in results:
                 print(result)
             print()
