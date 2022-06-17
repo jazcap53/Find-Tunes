@@ -31,7 +31,7 @@ def select_search_type() -> int:
     while selection is None or not 0 <= selection <= 4:
         try:
             selection = int(input('\tEnter 1 to search by song title,\n'
-                                  '\tEnter 2 to search by band/leader name,\n'
+                                  '\tEnter 2 to search by band or leader name,\n'
                                   '\tEnter 3 to search by partial song title,\n'
                                   '\tEnter 0 to quit:\n').strip() or '0')
         except ValueError:
@@ -48,7 +48,9 @@ def get_search_string(selection: int) -> str:
     elif selection == 1:
         search_string = do_prompt_sequence()
     elif selection == 2:
-        search_string = 'N.Y.I.'
+        search_string = do_prompt_sequence('band or leader name')
+        if search_string:
+            search_string = '%' + search_string + '%'
     elif selection == 3:
         search_string = do_prompt_sequence('partial song title')
         if search_string:
@@ -65,6 +67,8 @@ def do_prompt_sequence(target: str = 'song title') -> str:
         prompt_string = 'What ' + target + ' do you want to look up? '
         title = input(prompt_string)
         search_string = cleanup_title_string(title).lower()
+        if target == 'band or leader name':
+            search_string = search_string.replace(' ', '-')
         if search_string:
             yes_no = input(f'I will search for \'{search_string}\', ok? [Y/n])').strip().lower()
         if not yes_no:
