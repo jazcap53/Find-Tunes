@@ -16,7 +16,7 @@ QUERIES = (
     WHERE s.song_title = %s;
     ''',
     '''
-    SELECT r.discogs_release_string
+    SELECT r.discogs_release_string, s.song_title
     FROM tu_release r
     JOIN tu_song_release sr
     ON r.release_id = sr.release_id
