@@ -42,14 +42,21 @@ def get_db_connection():
 def find_a_tune():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('''SELECT discogs_release_string
-                                FROM tu_release r
-                                JOIN tu_song_release sr
-                                ON r.release_id = sr.release_id
-                                JOIN tu_song s
-                                ON sr.song_id = s.song_id
-                                WHERE s.song_title = \'Misty\';''')
+    cur.execute("SELECT discogs_release_string FROM tu_release r JOIN tu_song_release sr ON r.release_id = sr.release_id JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title = 'take the a train';")
     tunes = cur.fetchall()
     cur.close()
     conn.close()
     return render_template('find_a_tune.html', tunes=tunes)
+
+
+# @app.route('/<tune>')
+# def find_a_tune(tune=None):
+#     conn = get_db_connection()
+#     cur = conn.cursor()
+#     select_stmnt = "SELECT discogs_release_string FROM tu_release r JOIN tu_song_release sr ON r.release_id = sr.release_id JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title = %(song_title)s"
+#     cur.execute(select_stmnt, { 'song_title': tune } )
+#     tunes = cur.fetchall()
+#     cur.close()
+#     conn.close()
+#     return render_template('find_a_tune.html', tunes=tunes)
+
