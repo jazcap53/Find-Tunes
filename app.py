@@ -1,4 +1,4 @@
-from flask import Flask, render_template  # , request, flash
+from flask import Flask, render_template , request  # , flash
 # from markupsafe import escape
 import os
 import psycopg2
@@ -27,8 +27,12 @@ def show_releases():
     return render_template('show_releases.html', releases=releases)
 
 
-@app.route('/get')
+@app.route('/get', methods=["GET", "POST"])
 def get_tune():
+    if request.method == 'POST':
+        session['tune'] = request.form['tname']
+        return redirect(url_for('show_releases'))
+
     # conn = get_db_connection()
     # cur = conn.cursor()
     return render_template('get_tune.html')
