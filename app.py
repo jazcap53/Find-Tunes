@@ -17,11 +17,18 @@ def get_db_connection():
 
 
 @app.route('/show')
-def find_a_tune():
+def show_releases():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT discogs_release_string FROM tu_release r JOIN tu_song_release sr ON r.release_id = sr.release_id JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title = 'take the a train';")
+    cur.execute("SELECT discogs_release_string FROM tu_release r JOIN tu_song_release sr ON r.release_id = sr.release_id JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title = 'moonlight in vermont';")
     releases = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template('find_a_tune.html', releases=releases)
+    return render_template('show_releases.html', releases=releases)
+
+
+@app.route('/get')
+def get_tune():
+    # conn = get_db_connection()
+    # cur = conn.cursor()
+    return render_template('get_tune.html')
