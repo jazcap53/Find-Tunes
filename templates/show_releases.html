@@ -3,11 +3,17 @@
 {% block content %}
     <h2>{% block title %}Show Releases{% endblock %}</h2>
     
-    {% for release in releases %}
+    {% if releases %}
+        {% for release in releases %}
+            <div class="release">
+                <h3>{{ release }}</h3>
+            </div>
+        {% endfor %}
+    {% else %}
         <div class="release">
-            <h3>{{ release }}</h3>
+            <h3>Sorry, we don't have that one (yet).</h3>
         </div>
-    {% endfor %}
+    {% endif %}
 <!--
     <form action="{{ url_for('show_releases') }}" method=["get", "post"]>
     <label for="tune_name">Tune name</label>
