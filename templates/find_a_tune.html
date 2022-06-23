@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{% block title %}Find a Tune{% endblock %}</h1>
+    <h2>{% block title %}Show Results{% endblock %}</h2>
     
-    {% for tune in tunes %}
-        <div class="tune">
-            <h3>{{ tune }}</h3>
+    {% for release in releases %}
+        <div class="release">
+            <h3>{{ release }}</h3>
         </div>
     {% endfor %}
-
+<!--
     <form action="{{ url_for("find_a_tune")}}" method=["get", "post"]>
     <label for="tune_name">Tune name</label>
     <input type="text" id="tunename" name="tname" placeholder="tunename">
     <button type="submit">Lookup</button>
+-->
 {% endblock %}
