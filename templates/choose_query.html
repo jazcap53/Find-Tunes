@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{% block title %}Choose Query{% endblock %}</h2>
+
+    <!-- <form action="{{ url_for('get_tune') }}" method="POST"> -->
+    <form method="POST">
+        <input type="radio" id="by_song_title" name="choose_query" value="1" checked>
+        <label for="by_song_title">by song title</label><br>
+        <input type="radio" id="by_band_or_leader_name" name="choose_query" value="2">
+        <label for="by_band_or_leader_name">by band or leader name</label><br>
+        <input type="radio" id="by_partial_song_title" name="choose_query" value="3">
+        <label for="by_partial_song_title">by partial song title</label><br>
+        <input type="radio" id="quit" name="choose_query" value=0>
+        <label for="quit">quit</label><br>
+
+        <button type="submit">Pick One</button>
+    </form>
+
+{% endblock %}
