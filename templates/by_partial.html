@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{% block title %}Get Partial Name{% endblock %}</h2>
+
+    <form action="{{ url_for('by_partial') }}" method="POST">
+        <label for="partial_name">Partial Name</label>
+        <input type="text" id="partialname" name="pname" placeholder="Partial Name">
+        <button type="submit">Look Up</button>
+    </form>
+
+{% endblock %}
