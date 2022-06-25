@@ -4,7 +4,7 @@
     <h2>{% block title %}Get Band or Leader Name{% endblock %}</h2>
 
     <form action="{{ url_for('by_band') }}" method="POST">
-        <label for="tune_name">Band or Leader Name</label>
+        <label for="band_name">Band or Leader Name</label>
         <input type="text" id="bandname" name="bname" placeholder="Band or Leader Name">
         <button type="submit">Look Up</button>
     </form>

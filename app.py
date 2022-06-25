@@ -47,12 +47,14 @@ def show_releases():
         # return f'session[tune] is {session["tune"]}'
         cur.execute("SELECT discogs_release_string FROM tu_release r JOIN tu_song_release sr ON r.release_id = sr.release_id JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title = %s;", (session['tune'],))
     elif session['band'] is not None:
-        #return f'session[band] is {session["band"]}'
-        # band_with_dashes = session['band'].replace(' ', '-')
-        cur.execute("SELECT r.discogs_release_string FROM tu_release r WHERE r.discogs_release_string LIKE %s;", (session['band'],))
+        # return f'session[band] is {session["band"]}'
+        band_with_dashes = session['band'].replace(' ', '-')
+        # cur.execute("SELECT discogs_release_string FROM tu_release WHERE discogs_release_string LIKE %s;", ('%' + session['band'] + '%',))
+        cur.execute("SELECT discogs_release_string FROM tu_release WHERE discogs_release_string LIKE %s;", ('%' + band_with_dashes + '%',))
     releases = cur.fetchall()
     cur.close()
     conn.close()
+    # return f'len(releases) is {len(releases)}\n'
     return render_template('show_releases.html', releases=releases)
 
 
