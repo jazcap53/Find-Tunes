@@ -11,6 +11,9 @@ from scrape import cleanup_title_string
 
 
 def lookup() -> None:
+    """
+    Get query from user, then call function to search db for query, or exit.
+    """
     search_type = select_search_type()
     search_string = get_search_string(search_type)
     if search_string == 'N.Y.I.':
@@ -83,6 +86,9 @@ def do_prompt_sequence(target: str = 'song title') -> str:
 
 
 def call_db(query,  query_param):
+    """
+    Search the db using the provided query and params.
+    """
     conn = None
     try:
         params = config()
