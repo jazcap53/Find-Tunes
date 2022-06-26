@@ -8,7 +8,7 @@ from config import config
 
 from scrape import get_all_releases
 
-def connect(*, autocomt: bool =False):
+def connect(*, autocomt: bool=False):
     conn = None
     try:
         conn_params = config()
