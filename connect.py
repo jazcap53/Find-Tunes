@@ -6,7 +6,7 @@
 import psycopg2
 from config import config
 
-from scrape import get_all_releases, get_one_release
+from scrape import get_all_releases
 
 def connect(*, autocomt: bool =False):
     conn = None
@@ -18,10 +18,7 @@ def connect(*, autocomt: bool =False):
         return conn
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-    # finally:
-    #     if conn is not None:
-    #         conn.close()
-    #         print('db connection closed')
+        do_close_routine(conn)
 
 
 def execute_query(conn, query, iter_f, *, max_iter=0):
@@ -36,23 +33,27 @@ def execute_query(conn, query, iter_f, *, max_iter=0):
     try:
         while True:
             query_params = next(new_iter)
-            # breakpoint()
             cur.execute(query, (query_params))
-            # query_params = next(new_iter)
     except StopIteration:
         print('reached StopIteration in execute_query()')
-        cur.close()
+        do_close_routine(cur, conn)
     except (Exception, psycopg2.DatabaseError):
         raise
     finally:
-        if conn is not None:
-            conn.close()
-            print('db connection closed')
+        do_close_routine(cur, conn)
+
+
+def do_close_routine(cur=None, conn=None):
+    if cur and not cur.closed:
+        cur.close()
+        print('cursor closed')
+    if conn and not conn.closed:
+        conn.close()
+        print('db connection closed')
 
 
 if __name__ == '__main__':
     conn = connect(autocomt=True)
     if not conn.closed:
-        # breakpoint()
         execute_query(conn, "CALL tu_insert_all(%s, %s, %s, %s, %s)", get_all_releases, max_iter=1)
-        conn.close()
+        do_close_routine(conn)
