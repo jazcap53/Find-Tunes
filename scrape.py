@@ -10,7 +10,10 @@ from bs4 import BeautifulSoup
 import requests
 
 
-def get_all_releases():
+def get_all_releases(max_page: int = 0):
+    if max_page < 0:
+        print('max_page is < 0')
+        return
     pg = 1
     all_releases = []
     outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
@@ -55,9 +58,16 @@ def get_all_releases():
             break
         sleep(2)
         pg += 1
+        if max_page and pg > max_page:
+            # raise StopIteration
+            return
         outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
         print(f'\ngetting page {pg}: ', end='')
     print(f'{len(all_releases)} items found')
+
+
+def get_some_releases():
+    pass
 
 
 def get_one_release(dscg_rel_id, dscg_rel_str, url):
