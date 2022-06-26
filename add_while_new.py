@@ -1,4 +1,4 @@
-# file: get_sorted_discogs_ids.py
+# file: add_while_new.py
 # Andrew Jarcho
 # 2022-06-26
 
@@ -20,7 +20,7 @@ def execute_one_query(conn, query):
     try:
         cur.execute(query)
         releases = [item[0] for item in cur.fetchall()]
-        print(releases)
+        return releases
     except (Exception, psycopg2.DatabaseError) as e:
         print(e)
     finally:
@@ -30,5 +30,5 @@ def execute_one_query(conn, query):
 if __name__ == '__main__':
     conn = connect()
     query = "select discogs_release_id from tu_release order by discogs_release_id;"
-    execute_one_query(conn, query)
+    print(execute_one_query(conn, query))
 
