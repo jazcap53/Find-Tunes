@@ -108,7 +108,7 @@ def parse_dest(dest: str):
     return dscg_id, dscg_title
 
 
-def cleanup_title_string(title):  # , with_dashes=False):
+def cleanup_title_string(title):
     if not title:
         return title
 
@@ -121,22 +121,10 @@ def cleanup_title_string(title):  # , with_dashes=False):
     for c in punct:
         if c == '&':
             trans_dict[c] = 'and'
-        # elif c == '-':
-        #     if with_dashes:
-        #         trans_dict[c] = '-'
-        #     else:
-        #         trans_dict[c] = ''
         else:
             trans_dict[c] = ''
     trans_table = str.maketrans(trans_dict)
-    title = title.translate(trans_table)
-    
-    title = title.strip()
-
-    # if with_dashes:
-    #     title = title.replace(' ', '-')
-
-    return title
+    return title.translate(trans_table).strip()
 
 
 if __name__ == '__main__':

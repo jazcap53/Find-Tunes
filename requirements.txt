@@ -11,6 +11,7 @@ MarkupSafe==2.1.1
 psycopg2-binary==2.9.3
 requests==2.27.1
 soupsieve==2.3.2.post1
-SQLAlchemy==1.4.36
 urllib3==1.26.9
+watchdog==2.1.8
 Werkzeug==2.1.2
+WTForms==3.0.1
