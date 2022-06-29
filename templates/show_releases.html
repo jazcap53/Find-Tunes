@@ -1,3 +1,8 @@
+<!--
+    file: show_releases.html
+    Andrew Jarcho
+    2022-06-21
+-->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -16,10 +21,4 @@
             <h3>Sorry, we don't have that one (yet).</h3>
         </div>
     {% endif %}
-<!--
-    <form action="{{ url_for('show_releases') }}" method=["get", "post"]>
-    <label for="tune_name">Tune name</label>
-    <input type="text" id="tunename" name="tname" placeholder="tunename">
-    <button type="submit">Lookup</button>
--->
 {% endblock %}

@@ -91,6 +91,5 @@ def by_partial():
         session['band'] = None
         session['tune'] = None
         session['part'] = request.form['pname']
-        # return session['part']
         return redirect(url_for('show_releases'))
     return render_template('by_partial.html')
