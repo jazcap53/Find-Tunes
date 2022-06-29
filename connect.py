@@ -55,5 +55,5 @@ def do_close_routine(cur=None, conn=None):
 if __name__ == '__main__':
     conn = connect(autocomt=True)
     if not conn.closed:
-        execute_query(conn, "CALL tu_insert_all(%s, %s, %s, %s, %s)", get_all_releases, max_iter=1)
+        execute_query(conn, "CALL tu_insert_all(%s, %s, %s, %s, %s)", get_all_releases, max_iter=0)
         do_close_routine(conn)
