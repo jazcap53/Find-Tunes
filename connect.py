@@ -41,12 +41,6 @@ def execute_one_query(conn, query) -> any:
         do_close_routine(cur, conn)
 
 
-# def should_we_continue(n_releases: int, already_have: list = [])  -> bool:
-#     if not already_have:
-#         already_have = execute_one_query(conn := connect(), "select discogs_release_id from tu_release order by discogs_release_id;")
-#     return True  # N.Y.I.   
-
-
 def execute_query(conn, query, iter_f, *, max_iter=0):
     if not conn:
         return
@@ -76,10 +70,3 @@ def do_close_routine(cur=None, conn=None):
     if conn and not conn.closed:
         conn.close()
         print('db connection closed')
-
-
-if __name__ == '__main__':
-    conn = connect(autocomt=True)
-    if not conn.closed:
-        execute_query(conn, "CALL tu_insert_all(%s, %s, %s, %s, %s)", get_all_releases, max_iter=0)
-        do_close_routine(conn)

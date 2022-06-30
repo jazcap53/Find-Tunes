@@ -33,7 +33,7 @@ def get_all_releases(max_page: int = 0):
                 continue
             release = strong['class']
             if not got_release_ct:
-                n_releases = int(strong.string.partition(' of ')[2])
+                n_releases_at_start = int(strong.string.partition(' of ')[2])
                 got_release_ct = True
             if not printed_release_ct:
                 print(strong.string.strip())
@@ -52,14 +52,17 @@ def get_all_releases(max_page: int = 0):
                 while True:
                     try:
                         all_query_params = next(itr)
-                        yield all_query_params
+                        yield all_query_params  # to "CALL tu_insert_all" in get_tunes.py
                     except StopIteration:
                         itr = None
                         break
+                print(f'just processed release {len(all_releases)}')
                         
-        if len(all_releases) >= n_releases:
+        n_just_processed = len(all_releases)
+        # if len(all_releases) >= n_releases_at_start:
+        if n_just_processed >= n_releases_at_start:
             break
-        # if not should_we_continue(n_releases):
+        # if not should_we_continue(n_releases_at_start, n_just_processed):
         #     break
         sleep(2)
         pg += 1
@@ -101,6 +104,7 @@ def get_one_release(dscg_rel_id, dscg_rel_str, url):
                     tuple_to_yield = (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
                     print(f'in get_one_release(), yielding {tuple_to_yield}')
                     yield tuple_to_yield
+
 
 def get_track_string(td):
     s = td.string
