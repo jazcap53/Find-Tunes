@@ -2,11 +2,16 @@
 # Andrew Jarcho
 # 2022-05-31
 
+"""
+Holds code that connects with postgresql db.
+"""
 
 import psycopg2
 from config import config
 
-from scrape import get_all_releases
+# from scrape import get_all_releases
+# from pgres_and_discogs import should_we_continue
+
 
 def connect(*, autocomt: bool=False):
     conn = None
@@ -19,6 +24,30 @@ def connect(*, autocomt: bool=False):
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
         do_close_routine(conn)
+
+
+def execute_one_query(conn, query) -> any:
+    if not conn:
+        return
+
+    cur = conn.cursor()
+    if not cur:
+        print('failed to get cursor in execute_one_query()')
+        raise psycopg2.DatabaseError
+    try:
+        cur.execute(query)
+        releases = [item[0] for item in cur.fetchall()]
+        return releases
+    except (Exception, psycopg2.DatabaseError) as e:
+        print(e)
+    finally:
+        do_close_routine(cur, conn)
+
+
+# def should_we_continue(n_releases: int, already_have: list = [])  -> bool:
+#     if not already_have:
+#         already_have = execute_one_query(conn := connect(), "select discogs_release_id from tu_release order by discogs_release_id;")
+#     return True  # N.Y.I.   
 
 
 def execute_query(conn, query, iter_f, *, max_iter=0):

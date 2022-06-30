@@ -2,6 +2,9 @@
 # andrew jarcho
 # 2022-05-27
 
+"""
+Holds code that connects with Discogs
+"""
 
 import string
 from time import sleep
@@ -9,7 +12,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 import requests
 
-
+    
 def get_all_releases(max_page: int = 0):
     if max_page < 0:
         print('max_page is < 0')
@@ -56,6 +59,8 @@ def get_all_releases(max_page: int = 0):
                         
         if len(all_releases) >= n_releases:
             break
+        # if not should_we_continue(n_releases):
+        #     break
         sleep(2)
         pg += 1
         if max_page and pg > max_page:
@@ -64,10 +69,6 @@ def get_all_releases(max_page: int = 0):
         outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
         print(f'\ngetting page {pg}: ', end='')
     print(f'{len(all_releases)} items found')
-
-
-def get_some_releases():
-    pass
 
 
 def get_one_release(dscg_rel_id, dscg_rel_str, url):
