@@ -56,7 +56,7 @@ def get_all_releases(max_page: int = 0):
                     except StopIteration:
                         itr = None
                         break
-                print(f'just processed release {len(all_releases)}')
+                print(f'just processed release {len(all_releases)}: {all_query_params[1]}')
                         
         n_just_processed = len(all_releases)
         # if len(all_releases) >= n_releases_at_start:
@@ -102,7 +102,7 @@ def get_one_release(dscg_rel_id, dscg_rel_str, url):
                 if track_pos_string and track_title_string:
                     track_data = (str(track_pos_string).lower(), str(track_title_string).lower(), str(track_duration_string).lower())
                     tuple_to_yield = (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
-                    print(f'in get_one_release(), yielding {tuple_to_yield}')
+                    # print(f'in get_one_release(), yielding {tuple_to_yield}')
                     yield tuple_to_yield
 
 
