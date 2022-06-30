@@ -1,4 +1,7 @@
-# file: pgres_and_discogs.py
+#!/usr/bin/env python
+
+
+# file: get_tunes.py
 # Andrew Jarcho
 # 2022-06-29
 

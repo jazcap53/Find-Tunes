@@ -9,9 +9,6 @@ Holds code that connects with postgresql db.
 import psycopg2
 from config import config
 
-# from scrape import get_all_releases
-# from pgres_and_discogs import should_we_continue
-
 
 def connect(*, autocomt: bool=False):
     conn = None
