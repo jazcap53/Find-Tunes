@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 import requests
 
     
-def get_all_releases(max_page: int = 0):
+def get_all_releases(max_page: int):
     if max_page < 0:
         print('max_page is < 0')
         return
@@ -140,14 +140,3 @@ def cleanup_title_string(title):
             trans_dict[c] = ''
     trans_table = str.maketrans(trans_dict)
     return title.translate(trans_table).strip()
-
-
-if __name__ == '__main__':
-    it = get_all_releases()
-    while True:
-        try:
-            glorious_data = next(it)
-            print('\n')
-            print(glorious_data)
-        except StopIteration:
-            break

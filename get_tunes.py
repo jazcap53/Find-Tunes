@@ -42,7 +42,6 @@ def main():
     if not conn.closed:
         connect.execute_query(conn, "CALL tu_insert_all(%s, %s, %s, %s, %s)", scrape.get_all_releases, max_iter=0)
         connect.do_close_routine(conn)
-    scrape.get_all_releases(2)
 
 
 if __name__ == '__main__':
