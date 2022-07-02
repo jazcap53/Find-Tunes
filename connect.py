@@ -41,10 +41,13 @@ def get_release_list(conn, query) -> any:
         do_close_routine(cur, conn)
 
 
-def execute_query(conn, query, iter_f, *, max_iter=0):
+def execute_query(conn, query, iter_f, release_set, *, max_iter=0):
     if not conn:
         return
-
+    new_release_ct = 0
+    prev_release_id = 0
+    num_processed = 0
+    release_set_initial_len = len(release_set)
     cur = conn.cursor()
     if not cur:
         print('failed to get cursor in execute_query()')
@@ -54,7 +57,16 @@ def execute_query(conn, query, iter_f, *, max_iter=0):
         while True:
             query_params = next(new_iter)
             release_id = query_params[0]
+            if release_id != prev_release_id:
+                num_processed += 1
+                prev_release_id = release_id
+            if release_id not in release_set:
+                new_release_ct += 1
+                release_set.add(release_id)
+            
             cur.execute(query, (query_params))
+            if release_set_initial_len + num_processed > len(release_set):  # !!!
+                break
     except StopIteration:
         print('reached StopIteration in execute_query()')
         do_close_routine(cur, conn)
@@ -62,6 +74,12 @@ def execute_query(conn, query, iter_f, *, max_iter=0):
         raise
     finally:
         do_close_routine(cur, conn)
+
+
+def we_are_finished(initial_len: int, new_ct: int) -> bool:
+    pass
+
+
 
 
 def do_close_routine(cur=None, conn=None):

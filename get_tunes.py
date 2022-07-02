@@ -43,12 +43,12 @@ def main():
         query_0 = "select discogs_release_id from tu_release order by discogs_release_id;"
         release_list = connect.get_release_list(conn_0, query_0)
         connect.do_close_routine(conn_0)
-        print(release_list)
+        release_set = set(release_list)
 
     conn = connect.connect(autocomt=True)
     if not conn.closed:
         query = "CALL tu_insert_all(%s, %s, %s, %s, %s)"
-        connect.execute_query(conn, query, scrape.get_all_releases, max_iter=0)
+        connect.execute_query(conn, query, scrape.get_all_releases, release_set, max_iter=0)
         connect.do_close_routine(conn)
 
 
