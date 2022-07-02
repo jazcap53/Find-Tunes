@@ -15,12 +15,12 @@ import requests
     
 def get_all_releases(max_page: int = 0):
     if max_page < 0:
-        print('max_page is < 0')
+        print('Error: max_page is < 0.')
         return
     pg = 1
     all_releases = []
     outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
-    print(f'\ngetting page {pg}: ', end='')
+    print(f'\nGetting page {pg}: ', end='')
     got_release_ct = False
 
     itr = None
@@ -36,7 +36,7 @@ def get_all_releases(max_page: int = 0):
                 n_releases_at_start = int(strong.string.partition(' of ')[2])
                 got_release_ct = True
             if not printed_release_ct:
-                print(strong.string.strip())
+                print(f'item(s) {strong.string.strip()}.')
                 printed_release_ct = True
 
         for link in outer_soup.find_all('a'):
@@ -60,7 +60,7 @@ def get_all_releases(max_page: int = 0):
                     except StopIteration:
                         itr = None
                         break
-                print(f'just processed release {len(all_releases)}: {all_query_params[1]}')
+                print(f'Just processed release {len(all_releases)}: {all_query_params[1]}')
                         
         n_just_processed = len(all_releases)
         if n_just_processed >= n_releases_at_start:
@@ -71,8 +71,8 @@ def get_all_releases(max_page: int = 0):
             # raise StopIteration
             return
         outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
-        print(f'\ngetting page {pg}: ', end='')
-    print(f'{len(all_releases)} items found')
+        print(f'\nGetting page {pg}: ', end='')
+    print(f'{len(all_releases)} items found.')
 
 
 def get_one_release(dscg_rel_id, dscg_rel_str, url):

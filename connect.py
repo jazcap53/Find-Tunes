@@ -15,7 +15,7 @@ def connect(*, autocomt: bool=False, silent: bool=False):
     try:
         conn_params = config()
         if not silent:
-            print('connecting to the db')
+            print('Connecting to the db.')
         conn = psycopg2.connect(**conn_params)
         conn.autocommit = autocomt
         return conn
@@ -29,7 +29,7 @@ def get_release_list(conn, query) -> any:
         return
     cur = conn.cursor()
     if not cur:
-        print('failed to get cursor in execute_one_query()')
+        print('Failed to get cursor in get_release_list().')
         raise psycopg2.DatabaseError
     try:
         # query: "select discogs_release_id from tu_release order by discogs_release_id;"
@@ -50,7 +50,7 @@ def execute_query(conn, query, iter_f, release_set, *, max_iter=0):
     release_set_initial_len = len(release_set)
     cur = conn.cursor()
     if not cur:
-        print('failed to get cursor in execute_query()')
+        print('Failed to get cursor in execute_query().')
         raise psycopg2.DatabaseError
     new_iter = iter_f(max_iter)
     try:
@@ -67,20 +67,30 @@ def execute_query(conn, query, iter_f, release_set, *, max_iter=0):
             if release_set_initial_len + num_processed > len(release_set):  # !!!
                 break
     except StopIteration:
-        print('reached StopIteration in execute_query()')
+        print('Reached StopIteration in execute_query().')
         do_close_routine(cur, conn)
     except (Exception, psycopg2.DatabaseError):
         raise
     finally:
+        show_new_item_count(len(release_set), release_set_initial_len)
         do_close_routine(cur, conn)
+
+
+def show_new_item_count(cur_len, initial_len):
+    new_items = cur_len - initial_len
+    if not new_items:
+        print("No", end=' ')
+    else:
+        print(new_items, end=' ')
+    print('new items processed.\n')
 
 
 def do_close_routine(cur=None, conn=None, *, silent=False):
     if cur and not cur.closed:
         cur.close()
         if not silent:
-            print('cursor closed')
+            print('Cursor closed.')
     if conn and not conn.closed:
         conn.close()
         if not silent:
-            print('db connection closed')
+            print('Db connection closed.')
