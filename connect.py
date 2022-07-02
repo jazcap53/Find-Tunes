@@ -10,11 +10,12 @@ import psycopg2
 from config import config
 
 
-def connect(*, autocomt: bool=False):
+def connect(*, autocomt: bool=False, silent: bool=False):
     conn = None
     try:
         conn_params = config()
-        print('connecting to the db')
+        if not silent:
+            print('connecting to the db')
         conn = psycopg2.connect(**conn_params)
         conn.autocommit = autocomt
         return conn
@@ -38,7 +39,7 @@ def get_release_list(conn, query) -> any:
     except (Exception, psycopg2.DatabaseError) as e:
         print(e)
     finally:
-        do_close_routine(cur, conn)
+        do_close_routine(cur, conn, silent=True)
 
 
 def execute_query(conn, query, iter_f, release_set, *, max_iter=0):
@@ -74,16 +75,12 @@ def execute_query(conn, query, iter_f, release_set, *, max_iter=0):
         do_close_routine(cur, conn)
 
 
-def we_are_finished(initial_len: int, new_ct: int) -> bool:
-    pass
-
-
-
-
-def do_close_routine(cur=None, conn=None):
+def do_close_routine(cur=None, conn=None, *, silent=False):
     if cur and not cur.closed:
         cur.close()
-        print('cursor closed')
+        if not silent:
+            print('cursor closed')
     if conn and not conn.closed:
         conn.close()
-        print('db connection closed')
+        if not silent:
+            print('db connection closed')

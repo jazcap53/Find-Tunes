@@ -16,11 +16,11 @@ import scrape
 
 
 def main():
-    conn_0 = connect.connect()
+    conn_0 = connect.connect(silent=True)  # suppress printing conn status
     if not conn_0.closed:
         query_0 = "select discogs_release_id from tu_release order by discogs_release_id;"
         release_list = connect.get_release_list(conn_0, query_0)
-        connect.do_close_routine(conn_0)
+        connect.do_close_routine(conn_0, silent=True)
         release_set = set(release_list)
 
     conn = connect.connect(autocomt=True)
