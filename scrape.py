@@ -52,6 +52,10 @@ def get_all_releases(max_page: int = 0):
                 while True:
                     try:
                         all_query_params = next(itr)
+                        # yield to: 
+                        # `connect.execute_query(conn, query, scrape.get_all_releases, max_iter=0)`
+                        # in get_tunes.py: main()
+                        # where query is `"CALL tu_insert_all(%s, %s, %s, %s, %s)"`
                         yield all_query_params  # to "CALL tu_insert_all" in get_tunes.py
                     except StopIteration:
                         itr = None

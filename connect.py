@@ -23,15 +23,15 @@ def connect(*, autocomt: bool=False):
         do_close_routine(conn)
 
 
-def execute_one_query(conn, query) -> any:
+def get_release_list(conn, query) -> any:
     if not conn:
         return
-
     cur = conn.cursor()
     if not cur:
         print('failed to get cursor in execute_one_query()')
         raise psycopg2.DatabaseError
     try:
+        # query: "select discogs_release_id from tu_release order by discogs_release_id;"
         cur.execute(query)
         releases = [item[0] for item in cur.fetchall()]
         return releases
@@ -53,6 +53,7 @@ def execute_query(conn, query, iter_f, *, max_iter=0):
     try:
         while True:
             query_params = next(new_iter)
+            release_id = query_params[0]
             cur.execute(query, (query_params))
     except StopIteration:
         print('reached StopIteration in execute_query()')

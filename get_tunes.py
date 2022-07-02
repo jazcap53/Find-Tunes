@@ -38,11 +38,18 @@ def should_we_continue(n_releases_at_start: int, n_just_processed: int, already_
 
 
 def main():
+    conn_0 = connect.connect()
+    if not conn_0.closed:
+        query_0 = "select discogs_release_id from tu_release order by discogs_release_id;"
+        release_list = connect.get_release_list(conn_0, query_0)
+        connect.do_close_routine(conn_0)
+        print(release_list)
+
     conn = connect.connect(autocomt=True)
     if not conn.closed:
-        connect.execute_query(conn, "CALL tu_insert_all(%s, %s, %s, %s, %s)", scrape.get_all_releases, max_iter=0)
+        query = "CALL tu_insert_all(%s, %s, %s, %s, %s)"
+        connect.execute_query(conn, query, scrape.get_all_releases, max_iter=0)
         connect.do_close_routine(conn)
-    scrape.get_all_releases(2)
 
 
 if __name__ == '__main__':
