@@ -44,7 +44,6 @@ def get_release_list(conn, query) -> any:
 def execute_query(conn, query, iter_f, release_set, *, max_iter=0):
     if not conn:
         return
-    new_release_ct = 0
     prev_release_id = 0
     num_processed = 0
     release_set_initial_len = len(release_set)
@@ -61,7 +60,6 @@ def execute_query(conn, query, iter_f, release_set, *, max_iter=0):
                 num_processed += 1
                 prev_release_id = release_id
             if release_id not in release_set:
-                new_release_ct += 1
                 release_set.add(release_id)
             
             cur.execute(query, (query_params))

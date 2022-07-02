@@ -56,18 +56,15 @@ def get_all_releases(max_page: int = 0):
                         # `connect.execute_query(conn, query, scrape.get_all_releases, max_iter=0)`
                         # in get_tunes.py: main()
                         # where query is `"CALL tu_insert_all(%s, %s, %s, %s, %s)"`
-                        yield all_query_params  # to "CALL tu_insert_all" in get_tunes.py
+                        yield all_query_params
                     except StopIteration:
                         itr = None
                         break
                 print(f'just processed release {len(all_releases)}: {all_query_params[1]}')
                         
         n_just_processed = len(all_releases)
-        # if len(all_releases) >= n_releases_at_start:
         if n_just_processed >= n_releases_at_start:
             break
-        # if not should_we_continue(n_releases_at_start, n_just_processed):
-        #     break
         sleep(2)
         pg += 1
         if max_page and pg > max_page:
