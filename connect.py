@@ -42,7 +42,7 @@ def get_release_list(conn, query) -> any:
         do_close_routine(cur, conn, silent=True)
 
 
-def execute_query(conn, query, iter_f, release_set, *, max_iter=0):
+def execute_query(conn, query, iter_f, release_set, args, *, max_iter=0):
     if not conn:
         return
     prev_release_id = 0
@@ -64,10 +64,10 @@ def execute_query(conn, query, iter_f, release_set, *, max_iter=0):
                 release_set.add(release_id)
             
             cur.execute(query, (query_params))
-            if release_set_initial_len + num_processed > len(release_set):  # !!!
+            if not args.keep_going and release_set_initial_len + num_processed > len(release_set):  # !!!
                 break
     except StopIteration:
-        print('Reached StopIteration in execute_query().')
+        # print('Reached StopIteration in execute_query().')
         do_close_routine(cur, conn)
     except (Exception, psycopg2.DatabaseError):
         raise

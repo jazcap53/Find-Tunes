@@ -10,12 +10,22 @@
 Holds code that needs to connect both with the postgresql database, and with discogs
 """
 
+import argparse
 
 import connect
 import scrape
 
 
+def get_args():
+    parser = argparse.ArgumentParser(description='Process Discogs releases.')
+    parser.add_argument('-k', '--keep-going', action='store_true', default=False, help='Process all releases in collection.')
+    args = parser.parse_args()
+    return args
+
+
 def main():
+    args = get_args()
+
     conn_0 = connect.connect(silent=True)  # suppress printing conn status
     if not conn_0.closed:
         query_0 = "SELECT discogs_release_id FROM tu_release ORDER BY discogs_release_id;"
@@ -26,7 +36,7 @@ def main():
     conn = connect.connect(autocomt=True)
     if not conn.closed:
         query = "CALL tu_insert_all(%s, %s, %s, %s, %s)"
-        connect.execute_query(conn, query, scrape.get_all_releases, release_set, max_iter=0)
+        connect.execute_query(conn, query, scrape.get_all_releases, release_set, args, max_iter=0)
         connect.do_close_routine(conn)
 
 

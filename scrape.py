@@ -19,14 +19,14 @@ def get_all_releases(max_page: int = 0):
         return
     pg = 1
     all_releases = []
-    outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
+    outer_resp = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
     print(f'\nGetting page {pg}: ', end='')
     got_release_ct = False
 
     itr = None
-    while outer_r.status_code == 200:
+    while outer_resp.status_code == 200:
         printed_release_ct = False
-        outer_soup = BeautifulSoup(outer_r.text, 'html.parser')
+        outer_soup = BeautifulSoup(outer_resp.text, 'html.parser')
         all_strongs = outer_soup.find_all('strong')
         for strong in all_strongs:
             if not strong.get('class'):
@@ -70,7 +70,7 @@ def get_all_releases(max_page: int = 0):
         if max_page and pg > max_page:
             # raise StopIteration
             return
-        outer_r = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
+        outer_resp = requests.get(f'https://www.discogs.com/user/jazcap53/collection?page={pg}')
         print(f'\nGetting page {pg}: ', end='')
     print(f'{len(all_releases)} items found.')
 
