@@ -118,7 +118,9 @@ def url_parse_unquote(s):
 
 
 def normalize_str(s):
-    s = url_parse_unquote(s)
+    if isinstance(s, int):
+        return s
+    s = url_parse_unquote(str(s))
     return strip_accents(s).casefold()
 
 
