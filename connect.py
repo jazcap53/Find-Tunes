@@ -67,7 +67,6 @@ def execute_query(conn, query, iter_f, release_set, args, *, max_iter=0):
             if not args.keep_going and release_set_initial_len + num_processed > len(release_set):  # !!!
                 break
     except StopIteration:
-        # print('Reached StopIteration in execute_query().')
         do_close_routine(cur, conn)
     except (Exception, psycopg2.DatabaseError):
         raise

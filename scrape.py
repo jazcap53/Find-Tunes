@@ -8,6 +8,8 @@ Holds code that connects with Discogs
 
 import string
 from time import sleep
+import unicodedata
+import urllib.parse
 
 from bs4 import BeautifulSoup
 import requests
@@ -53,7 +55,7 @@ def get_all_releases(max_page: int = 0):
                     try:
                         all_query_params = next(itr)
                         # yield to: 
-                        # `connect.execute_query(conn, query, scrape.get_all_releases, max_iter=0)`
+                        # `connect.execute_query(conn, query, scrape.get_all_releases, release_set, args, max_iter=0)`
                         # in get_tunes.py: main()
                         # where query is `"CALL tu_insert_all(%s, %s, %s, %s, %s)"`
                         yield all_query_params
@@ -101,10 +103,23 @@ def get_one_release(dscg_rel_id, dscg_rel_str, url):
                         track_title_string = get_track_string(table_data)
                         track_title_string = cleanup_title_string(track_title_string)
                 if track_pos_string and track_title_string:
-                    track_data = (str(track_pos_string).lower(), str(track_title_string).lower(), str(track_duration_string).lower())
-                    tuple_to_yield = (dscg_rel_id, str(dscg_rel_str).lower(), *track_data)
-                    # print(f'in get_one_release(), yielding {tuple_to_yield}')
+                    track_data = (normalize_str(track_pos_string), normalize_str(track_title_string),
+                                  normalize_str(track_duration_string))
+                    tuple_to_yield = (dscg_rel_id, normalize_str(dscg_rel_str), *track_data)
                     yield tuple_to_yield
+
+
+def strip_accents(s):
+   return ''.join(c for c in unicodedata.normalize('NFD', s)
+                  if unicodedata.category(c) != 'Mn')
+
+def url_parse_unquote(s):
+    return urllib.parse.unquote(s)
+
+
+def normalize_str(s):
+    s = url_parse_unquote(s)
+    return strip_accents(s).casefold()
 
 
 def get_track_string(td):

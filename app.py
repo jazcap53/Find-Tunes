@@ -3,8 +3,6 @@
 # 2022-06-21
 
 
-import urllib.parse
-
 from flask import Flask, render_template , request, session, redirect, url_for
 import os
 import psycopg2
@@ -62,18 +60,11 @@ def show_releases():
                     "JOIN tu_song_release sr ON r.release_id = sr.release_id "
                     "JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title LIKE %s;", 
                     ('%' + part_with_dashes + '%',))
-    releases = cur.fetchall()  # releases is a list of 1-tuples or 2-tuples
-    # translate url-quoted characters such as %3B to their unquoted versions
-    releases_unquoted = []
-    for ix, val in enumerate(releases):
-        unquoted = []
-        for jx in range(len(val)):
-            unquoted.append(urllib.parse.unquote(releases[ix][jx]))
-        releases_unquoted.append(unquoted)
+    releases = cur.fetchall()
 
     cur.close()
     conn.close()
-    return render_template('show_releases.html', query=query, releases=releases_unquoted)
+    return render_template('show_releases.html', query=query, releases=releases)
 
 
 @app.route('/get', methods=["GET", "POST"])

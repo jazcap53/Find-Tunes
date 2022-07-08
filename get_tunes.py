@@ -11,6 +11,7 @@ Holds code that needs to connect both with the postgresql database, and with dis
 """
 
 import argparse
+import unicodedata
 
 import connect
 import scrape
@@ -31,6 +32,8 @@ def main():
         query_0 = "SELECT discogs_release_id FROM tu_release ORDER BY discogs_release_id;"
         release_list = connect.get_release_list(conn_0, query_0)
         connect.do_close_routine(conn_0, silent=True)
+        for ix, val in enumerate(release_list):
+            release_list[ix] = scrape.normalize_str(val)
         release_set = set(release_list)
 
     conn = connect.connect(autocomt=True)
