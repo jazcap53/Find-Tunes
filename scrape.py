@@ -89,21 +89,21 @@ def get_one_release(dscg_rel_id, dscg_rel_str, url):
             table_body = table.tbody
             for table_row in table_body.find_all('tr'):
                 # reset output strings
-                track_pos_string = ''
+                track_posn_str = ''
                 track_title_string = ''
                 track_duration_string = ''
                 for table_data in table_row.find_all('td'):
                     if not table_data.get('class'):
                         continue
                     if table_data['class'][0] == 'trackPos_2RCje':
-                        track_pos_string = get_track_string(table_data)
+                        track_posn_str = get_track_string(table_data)
                     elif table_data['class'][0] == 'duration_2t4qr':
                         track_duration_string = get_track_string(table_data)
                     elif table_data['class'][0] == 'trackTitle_CTKp4':
                         track_title_string = get_track_string(table_data)
                         track_title_string = cleanup_title_string(track_title_string)
-                if track_pos_string and track_title_string:
-                    track_data = (normalize_str(track_pos_string), normalize_str(track_title_string),
+                if track_posn_str and track_title_string:
+                    track_data = (normalize_str(track_posn_str), normalize_str(track_title_string),
                                   normalize_str(track_duration_string))
                     tuple_to_yield = (dscg_rel_id, normalize_str(dscg_rel_str), *track_data)
                     yield tuple_to_yield
