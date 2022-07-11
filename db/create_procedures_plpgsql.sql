@@ -61,22 +61,36 @@ CREATE OR REPLACE FUNCTION tu_delete_all(
 AS $$
 DECLARE
     ct_releases_removed integer; 
+    ct_songs_removed integer;
     release_id_found integer;
     song_ids_found integer[];
-    one_song_id integer;
+    ct_song_ids_found integer;
+    i integer;
 BEGIN
     SELECT release_id INTO release_id_found FROM tu_release WHERE discogs_release_id = target_discogs_release_id 
         AND discogs_release_string = target_discogs_release_string;
-
     IF NOT FOUND THEN
-        ct_releases_removed = 0;
+        ct_releases_removed := 0;
     ELSE
-        DELETE FROM tu_song_release WHERE release_id = release_id_found;
-        ct_releases_removed = 1;
+        song_ids_found := ARRAY(
+            SELECT song_id 
+            FROM tu_song_release 
+            WHERE release_id = release_id_found
+        );
+        ct_song_ids_found := array_length(song_ids_found, 1);
+        for i in 1..ct_song_ids_found LOOP
+            DELETE FROM tu_song
+            WHERE song_id = song_ids_found[i];
+        END LOOP;
+        IF NOT FOUND THEN
+            ct_songs_removed := 0;
+        ELSE
+            GET DIAGNOSTICS ct_songs_removed := ROW_COUNT;
+        END IF;
+
+        DELETE FROM tu_release WHERE release_id = release_id_found;
+        GET DIAGNOSTICS ct_releases_removed := ROW_COUNT;
     END IF;
-    
-    RETURN ct_releases_removed;
+    return 1000 * ct_releases_removed + ct_songs_removed;
 END;
 $$ LANGUAGE PLPGSQL;
-
-

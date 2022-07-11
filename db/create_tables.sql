@@ -28,9 +28,7 @@ DROP TABLE IF EXISTS tu_song_release;
 
 CREATE TABLE tu_song_release (
     song_release_id SERIAL UNIQUE,
-    song_id integer NOT NULL,
-    release_id integer NOT NULL,
-    PRIMARY KEY (song_release_id),
-    FOREIGN KEY (song_id) REFERENCES tu_song (song_id) ON DELETE CASCADE,
-    FOREIGN KEY (release_id) REFERENCES tu_release (release_id) ON DELETE CASCADE
+    song_id integer NOT NULL REFERENCES tu_song (song_id) ON DELETE CASCADE,
+    release_id integer NOT NULL REFERENCES tu_release (release_id) ON DELETE CASCADE,
+    PRIMARY KEY (song_release_id)
 );
