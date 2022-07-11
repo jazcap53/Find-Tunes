@@ -52,3 +52,31 @@ BEGIN
 END;
 $$
 LANGUAGE PLPGSQL;
+
+
+CREATE OR REPLACE FUNCTION tu_delete_all(
+    target_discogs_release_id bigint, 
+    target_discogs_release_string varchar
+) RETURNS integer 
+AS $$
+DECLARE
+    ct_releases_removed integer; 
+    release_id_found integer;
+    song_ids_found integer[];
+    one_song_id integer;
+BEGIN
+    SELECT release_id INTO release_id_found FROM tu_release WHERE discogs_release_id = target_discogs_release_id 
+        AND discogs_release_string = target_discogs_release_string;
+
+    IF NOT FOUND THEN
+        ct_releases_removed = 0;
+    ELSE
+        DELETE FROM tu_song_release WHERE release_id = release_id_found;
+        ct_releases_removed = 1;
+    END IF;
+    
+    RETURN ct_releases_removed;
+END;
+$$ LANGUAGE PLPGSQL;
+
+

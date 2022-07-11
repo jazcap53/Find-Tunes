@@ -31,6 +31,6 @@ CREATE TABLE tu_song_release (
     song_id integer NOT NULL,
     release_id integer NOT NULL,
     PRIMARY KEY (song_release_id),
-    FOREIGN KEY (song_id) REFERENCES tu_song (song_id),
-    FOREIGN KEY (release_id) REFERENCES tu_release (release_id)
+    FOREIGN KEY (song_id) REFERENCES tu_song (song_id) ON DELETE CASCADE,
+    FOREIGN KEY (release_id) REFERENCES tu_release (release_id) ON DELETE CASCADE
 );
