@@ -3,11 +3,11 @@
 # 2022-06-01
 
 
-from config import config
+from conf.config import config
 import psycopg2
 
 from queries import return_query
-from scrape import cleanup_title_string
+from back_end.scrape import cleanup_title_string
 
 
 def lookup() -> None:

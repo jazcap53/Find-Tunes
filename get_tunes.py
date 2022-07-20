@@ -13,8 +13,8 @@ Holds code that needs to connect both with the postgresql database, and with dis
 import argparse
 import unicodedata
 
-import connect
-import scrape
+from back_end import connect
+from back_end import scrape
 
 
 def get_args():

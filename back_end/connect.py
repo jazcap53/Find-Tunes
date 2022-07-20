@@ -7,7 +7,7 @@ Holds code that connects with postgresql db.
 """
 
 import psycopg2
-from config import config
+from conf.config import config
 
 
 def connect(*, autocomt: bool=False, silent: bool=False):
