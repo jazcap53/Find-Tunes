@@ -62,6 +62,8 @@ def show_releases():
                     ('%' + part_with_dashes + '%',))
     releases = cur.fetchall()
 
+    releases = [[x.replace('-', ' ') for x in y if isinstance(x, str)] for y in releases]
+
     cur.close()
     conn.close()
     return render_template('show_releases.html', query=query, releases=releases)
