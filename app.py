@@ -62,6 +62,7 @@ def show_releases():
                     ('%' + part_with_dashes + '%',))
     releases = cur.fetchall()
 
+    # the final `[0]` below gets rid of square brackets in the output
     releases = [[x.replace('-', ' ') for x in y if isinstance(x, str)] for y in releases]
 
     cur.close()

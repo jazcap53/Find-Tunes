@@ -13,7 +13,7 @@
     {% if releases %}
         {% for release in releases %}
             <div class="release">
-                <h3>{{ release }}</h3>
+                <h3>{{ ', '.join(release) }}</h3>
             </div>
         {% endfor %}
     {% else %}
