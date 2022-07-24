@@ -45,20 +45,20 @@ def show_releases():
         query = session['tune']
         cur.execute("SELECT discogs_release_string FROM tu_release r "
                     "JOIN tu_song_release sr ON r.release_id = sr.release_id "
-                    "JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title = %s;",
+                    "JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title = %s",
                     (session['tune'],))
     elif session['band'] is not None:
         query = session['band']
         band_with_dashes = session['band'].replace(' ', '-')
         cur.execute("SELECT discogs_release_string FROM tu_release "
-                    "WHERE discogs_release_string LIKE %s;", 
+                    "WHERE discogs_release_string LIKE %s", 
                     ('%' + band_with_dashes + '%',))
     elif session['part'] is not None:
         query = session['part']
         part_with_dashes = session['part'].replace(' ', '-')
         cur.execute("SELECT discogs_release_string, s.song_title FROM tu_release r "
                     "JOIN tu_song_release sr ON r.release_id = sr.release_id "
-                    "JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title LIKE %s;", 
+                    "JOIN tu_song s ON sr.song_id = s.song_id WHERE s.song_title LIKE %s", 
                     ('%' + part_with_dashes + '%',))
     releases = cur.fetchall()
 
