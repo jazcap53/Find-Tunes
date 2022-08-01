@@ -14,7 +14,7 @@ def subst_us_bar(name, positions):
     Replace the answer'th instance of _ in
     name with ___ (triple underscore).
     '''
-    us_ct = 0 
+    us_ct = 0
     i = 0
     orig_name = name[:]
     while i < len(name):
@@ -27,7 +27,7 @@ def subst_us_bar(name, positions):
             else:
                 i += 1
         else:
-            i += 1                
+            i += 1
     print(name)
     yn = input("Is this what you wanted? [y/N] ")
     # breakpoint()
@@ -38,7 +38,7 @@ def subst_us_bar(name, positions):
 
 def get_positions(num_us):
     '''
-    Prompt the user for a space-separated list of 
+    Prompt the user for a space-separated list of
     positions of underscores to replace with triple-underscore.
     '''
     prompt = f"Enter positive integers <= {num_us} separated by spaces >>> "
@@ -50,7 +50,7 @@ def get_positions(num_us):
 def print_filenames(path):
     '''Display and rename all mp3 files in the specified directory.'''
     for file in path.iterdir():
-        if file.suffix != '.mp3' or '___' in file.name: 
+        if file.suffix != '.mp3' or '___' in file.name:
             continue
         name = file.name
         print(name)
