@@ -5,8 +5,6 @@ ___ (triple underscore).
 '''
 
 from pathlib import Path
-from sys import orig_argv
-from turtle import pos
 
 
 def subst_us_bar(name, positions):
