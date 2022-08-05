@@ -1,17 +1,17 @@
-'''
-Lets the user replace a selected instance of
+"""
+Lets the user replace selected instances of
 the underscore character in file names with
 ___ (triple underscore).
-'''
+"""
 
 from pathlib import Path
 
 
-def subst_us_bar(name, positions):
-    '''
-    Replace the answer'th instance of _ in
+def subst_us_3us(name, positions):
+    """
+    Replace selected instances of _ in
     name with ___ (triple underscore).
-    '''
+    """
     us_ct = 0
     i = 0
     orig_name = name[:]
@@ -27,18 +27,17 @@ def subst_us_bar(name, positions):
         else:
             i += 1
     print(name)
-    yn = input("Is this what you wanted? [y/N] ")
-    # breakpoint()
-    if yn == 'y':
+    if not input("Is this what you wanted? (Press <Enter> "
+                 "for yes, 'n' + <Enter> for no) "):
         return True, name
     return False, orig_name
 
 
 def get_positions(num_us):
-    '''
+    """
     Prompt the user for a space-separated list of
     positions of underscores to replace with triple-underscore.
-    '''
+    """
     prompt = f"Enter positive integers <= {num_us} separated by spaces >>> "
     answer = input(prompt)
     first_list = sorted(list({int(part) for part in answer.split() if 1 <= int(part)}))
@@ -46,7 +45,7 @@ def get_positions(num_us):
 
 
 def print_filenames(path):
-    '''Display and rename all mp3 files in the specified directory.'''
+    """Display and rename all mp3 files in the specified directory."""
     for file in path.iterdir():
         if file.suffix != '.mp3' or '___' in file.name:
             continue
@@ -54,13 +53,11 @@ def print_filenames(path):
         print(name)
         num_us = name.count('_')
         positions = get_positions(num_us)
-        success, name = subst_us_bar(name, positions)
+        success, name = subst_us_3us(name, positions)
         while not success:
-        # if success:
-        # # name = subst_us_bar(name, result)[1]
             print(name)
             positions = get_positions(num_us)
-            success, name = subst_us_bar(name, positions)
+            success, name = subst_us_3us(name, positions)
         file.rename(Path(path / name))
 
 
