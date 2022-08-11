@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS tu_song CASCADE;
 
 CREATE TABLE tu_song (
     song_id SERIAL UNIQUE,
-    song_title varchar(120) NOT NULL UNIQUE,
+    song_title text NOT NULL UNIQUE,
     PRIMARY KEY (song_id),
     CONSTRAINT lowercase CHECK (song_title = lower(song_title))  -- ,
     -- CONSTRAINT not_both_null CHECK (tu_song_release.release_id is not null or tu_song_path.path_id is not null)
@@ -18,10 +18,10 @@ DROP TABLE IF EXISTS tu_release CASCADE;
 
 CREATE TABLE tu_release (
     release_id SERIAL UNIQUE,
-    discogs_release_id bigint NOT NULL,
-    discogs_release_string varchar(240) NOT NULL,
+    discogs_release_id bigint,
+    release_string text NOT NULL,
     PRIMARY KEY (release_id),
-    CONSTRAINT lowercase CHECK (discogs_release_string = lower(discogs_release_string))
+    CONSTRAINT lowercase CHECK (release_string = lower(release_string))
 );
 
 

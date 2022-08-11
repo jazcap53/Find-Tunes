@@ -45,11 +45,11 @@ def get_all_releases(max_page: int = 0):
             destination = link.get('href')
             if destination and destination.startswith('/release/') and destination[9].isdigit():
                 all_releases.append(destination)
-                discogs_release_id, discogs_release_string = parse_dest(destination)
+                discogs_release_id, release_string = parse_dest(destination)
 
                 inner_url = 'https://www.discogs.com' + destination
                 if itr is None:
-                    itr = get_one_release(discogs_release_id, discogs_release_string, inner_url)  # DO NOT DELETE
+                    itr = get_one_release(discogs_release_id, release_string, inner_url)  # DO NOT DELETE
                 
                 while True:
                     try:

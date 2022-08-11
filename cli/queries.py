@@ -7,7 +7,7 @@ selection_map = {1: 0, 3: 1, 2: 2}
 
 QUERIES = (
     '''
-    SELECT r.discogs_release_string
+    SELECT r.release_string
     FROM tu_release r
     JOIN tu_song_release sr
     ON r.release_id = sr.release_id
@@ -16,7 +16,7 @@ QUERIES = (
     WHERE s.song_title = %s;
     ''',
     '''
-    SELECT r.discogs_release_string, s.song_title
+    SELECT r.release_string, s.song_title
     FROM tu_release r
     JOIN tu_song_release sr
     ON r.release_id = sr.release_id
@@ -25,9 +25,9 @@ QUERIES = (
     WHERE s.song_title LIKE %s;
     ''',
     '''
-    SELECT r.discogs_release_string
+    SELECT r.release_string
     FROM tu_release r
-    WHERE r.discogs_release_string LIKE %s;
+    WHERE r.release_string LIKE %s;
     '''
 )
 

@@ -32,7 +32,7 @@ def get_release_list(conn, query) -> any:
         print('Failed to get cursor in get_release_list().')
         raise psycopg2.DatabaseError
     try:
-        # query: "select discogs_release_id from tu_release order by discogs_release_id;"
+        # query: "select release_id from tu_release order by release_id;"
         cur.execute(query)
         releases = [item[0] for item in cur.fetchall()]
         return releases
