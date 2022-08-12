@@ -62,7 +62,6 @@ def execute_query(conn, query, iter_f, release_set, args, *, max_iter=0):
                 prev_release_id = release_id
             if release_id not in release_set:
                 release_set.add(release_id)
-            
             cur.execute(query, (query_params))
             if not args.keep_going and release_set_initial_len + num_processed > len(release_set):  # !!!
                 break

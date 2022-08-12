@@ -4,11 +4,11 @@
 
 
 CREATE OR REPLACE PROCEDURE tu_insert_all(
-    new_discogs_release_id bigint, 
+    new_discogs_release_id bigint,
     new_release_string varchar,
-    new_track_pos_str varchar, 
-    new_track_title_str varchar, 
-    new_track_duration_str varchar
+    -- new_track_pos_str varchar,
+    new_track_title_str varchar  -- ,
+    -- new_track_duration_str varchar
 ) 
 AS $$
 DECLARE
@@ -31,7 +31,8 @@ BEGIN
         SELECT song_id INTO tu_song_id FROM tu_song WHERE tu_song.song_title = new_track_title_str;
     END IF;
 
-    SELECT * INTO dummy_release FROM tu_release WHERE discogs_release_id = new_discogs_release_id;
+    -- SELECT * INTO dummy_release FROM tu_release WHERE discogs_release_id = new_discogs_release_id;
+    SELECT * INTO dummy_release FROM tu_release WHERE release_string = new_release_string;
 
     IF NOT FOUND THEN
 	    -- insert into the tu_release table

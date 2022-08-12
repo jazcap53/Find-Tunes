@@ -38,7 +38,8 @@ def main():
 
     conn = connect.connect(autocomt=True)
     if not conn.closed:
-        query = "CALL tu_insert_all(%s, %s, %s, %s, %s)"
+        # query = "CALL tu_insert_all(%s, %s, %s, %s, %s)"
+        query = "CALL tu_insert_all(%s, %s, %s)"  # NEW
         connect.execute_query(conn, query, scrape.get_all_releases, release_set, args, max_iter=0)
         connect.do_close_routine(conn)
 

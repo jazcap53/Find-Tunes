@@ -58,6 +58,7 @@ def get_all_releases(max_page: int = 0):
                         # `connect.execute_query(conn, query, scrape.get_all_releases, release_set, args, max_iter=0)`
                         # in get_tunes.py: main()
                         # where query is `"CALL tu_insert_all(%s, %s, %s, %s, %s)"`
+                        # where query is "CALL tu_insert_all(%s, %s, %s)"  NEW
                         yield all_query_params
                     except StopIteration:
                         itr = None
@@ -103,9 +104,11 @@ def get_one_release(dscg_rel_id, dscg_rel_str, url):
                         track_title_string = get_track_string(table_data)
                         track_title_string = cleanup_title_string(track_title_string)
                 if track_posn_str and track_title_string:
-                    track_data = (normalize_str(track_posn_str), normalize_str(track_title_string),
-                                  normalize_str(track_duration_string))
-                    tuple_to_yield = (dscg_rel_id, normalize_str(dscg_rel_str), *track_data)
+                    # track_data = (normalize_str(track_posn_str), normalize_str(track_title_string),
+                    #               normalize_str(track_duration_string))
+                    track_data = normalize_str(track_title_string)
+                    # tuple_to_yield = (dscg_rel_id, normalize_str(dscg_rel_str), *track_data)
+                    tuple_to_yield = (dscg_rel_id, normalize_str(dscg_rel_str), track_data)
                     yield tuple_to_yield
 
 
