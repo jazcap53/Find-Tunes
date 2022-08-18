@@ -4,8 +4,10 @@ def extract_song_name(s):
     song_path = s.split('___')[0].replace('_', ' ')
     return os.path.basename(song_path)
 
+
 def shorten_path_name(path_name):
-    return '~/' + '/'.join(path_name.split('/')[3:])
+    # return '~/' + '/'.join(path_name.split('/')[3:])
+    return path_name.rsplit('/')[-1]
 
 
 def get_mp3_set(dirname):

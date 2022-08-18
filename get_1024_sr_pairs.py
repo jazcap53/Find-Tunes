@@ -5,6 +5,7 @@
 from time import sleep
 
 from back_end.connect import connect, get_release_list, do_close_routine
+from back_end.add_mp3s import get_mp3_set
 
 
 def get_song_release_ct():
@@ -22,6 +23,9 @@ def get_item_batches():
     max_offset = get_song_release_ct()
     offset = 0
     batches_looked_at = 0
+    song_and_file_names = list(get_mp3_set('/home/jazcap53/Music/misc_mp3s'))
+    song_names_only = [safn[0] for safn in song_and_file_names]
+    songs_found_in_db = set()
     query = ("SELECT s.song_id, s.song_title, r.release_id, r.release_string "
              "FROM tu_song s JOIN tu_song_release sr ON s.song_id = sr.song_id "
              "               JOIN tu_release r ON sr.release_id = r.release_id "
@@ -30,13 +34,21 @@ def get_item_batches():
         while offset < max_offset:
             all_items = get_one_batch(conn, query, limit, offset)
             if not all_items:
-                return
+                raise ValueError
+            for item in all_items:
+                if item[1] in song_names_only:
+                    for song_and_file in song_and_file_names:
+                        if song_and_file[0] == item[1]:
+                            songs_found_in_db.add(song_and_file)  # TODO: THIS WORKS BUT IS DIRTY. STRAIGHTEN OUT SET vs. LIST
+            # breakpoint()
             offset += limit
-            print(*all_items, sep='\n')
+            # print(*all_items, sep='\n')
             batches_looked_at += 1
-            print(f'looked at batch #{batches_looked_at}')
-            print(f'LEN ALL ITEMS IS {len(all_items)}')
-            sleep(1)
+            # print(f'looked at batch #{batches_looked_at}')
+            # print(f'LEN ALL ITEMS IS {len(all_items)}')
+            # sleep(1)
+    print(sorted(songs_found_in_db))
+    print(len(songs_found_in_db))
 
 
 def get_one_batch(conn, query, limit, offset):
@@ -48,6 +60,6 @@ def get_one_batch(conn, query, limit, offset):
 
 
 if __name__ == '__main__':
-    get_song_release_ct()
-    sleep(3)
+    # get_song_release_ct()
+    # sleep(3)
     get_item_batches()
