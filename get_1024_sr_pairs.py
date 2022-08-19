@@ -10,27 +10,27 @@ from back_end.add_mp3s import get_mp3_set
 
 def get_song_release_ct():
     query= "SELECT COUNT(*) FROM tu_song_release"
-    with connect() as conn:
+    with connect(silent=True) as conn:
         cur = conn.cursor()
         cur.execute(query)
         n_song_releases = cur.fetchone()[0]
-    print(f'I count {n_song_releases} song-release pairs')
+    print(f'I count {n_song_releases} song-release pairs in db')
     return n_song_releases
 
 
-def get_item_batches():
+def get_item_batches(directory='/home/jazcap53/Music/misc_mp3s'):
     limit = 1024
     max_offset = get_song_release_ct()
     offset = 0
     batches_looked_at = 0
-    song_and_file_names = list(get_mp3_set('/home/jazcap53/Music/misc_mp3s'))
+    song_and_file_names = list(get_mp3_set(directory))
     song_names_only = [safn[0] for safn in song_and_file_names]
     songs_found_in_db = set()
     query = ("SELECT s.song_id, s.song_title, r.release_id, r.release_string "
              "FROM tu_song s JOIN tu_song_release sr ON s.song_id = sr.song_id "
              "               JOIN tu_release r ON sr.release_id = r.release_id "
              "LIMIT %s OFFSET %s")
-    with connect() as conn:
+    with connect(silent=True) as conn:
         while offset < max_offset:
             all_items = get_one_batch(conn, query, limit, offset)
             if not all_items:
@@ -47,8 +47,10 @@ def get_item_batches():
             # print(f'looked at batch #{batches_looked_at}')
             # print(f'LEN ALL ITEMS IS {len(all_items)}')
             # sleep(1)
-    print(sorted(songs_found_in_db))
-    print(len(songs_found_in_db))
+    print(f'Checked {batches_looked_at} batches of <= 1024 db items')
+    print(f'Found {len(songs_found_in_db)} songs from {directory} in db')
+    print(*sorted(songs_found_in_db), sep='\n')
+    # print(len(songs_found_in_db))
 
 
 def get_one_batch(conn, query, limit, offset):
