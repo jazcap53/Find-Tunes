@@ -18,13 +18,12 @@ def get_song_release_ct():
     return n_song_releases
 
 
-def get_item_batches(directory='/home/jazcap53/Music/misc_mp3s'):
+def get_item_batches(directory: str ='/home/jazcap53/Music/misc_mp3s') -> set:
     limit = 1024
     max_offset = get_song_release_ct()
     offset = 0
     batches_looked_at = 0
     song_and_file_names = list(get_mp3_set(directory))
-    song_names_only = [safn[0] for safn in song_and_file_names]
     songs_found_in_db = set()
     query = ("SELECT s.song_id, s.song_title, r.release_id, r.release_string "
              "FROM tu_song s JOIN tu_song_release sr ON s.song_id = sr.song_id "
@@ -35,25 +34,27 @@ def get_item_batches(directory='/home/jazcap53/Music/misc_mp3s'):
             all_items = get_one_batch(conn, query, limit, offset)
             if not all_items:
                 raise ValueError
-            for item in all_items:
-                if item[1] in song_names_only:
-                    for song_and_file in song_and_file_names:
-                        if song_and_file[0] == item[1]:
-                            songs_found_in_db.add(song_and_file)  # TODO: THIS WORKS BUT IS DIRTY. STRAIGHTEN OUT SET vs. LIST
-            # breakpoint()
+            songs_found_in_db |= find_songs_in_db(all_items, song_and_file_names)
             offset += limit
-            # print(*all_items, sep='\n')
             batches_looked_at += 1
-            # print(f'looked at batch #{batches_looked_at}')
-            # print(f'LEN ALL ITEMS IS {len(all_items)}')
-            # sleep(1)
     print(f'Checked {batches_looked_at} batches of <= 1024 db items')
     print(f'Found {len(songs_found_in_db)} songs from {directory} in db')
     print(*sorted(songs_found_in_db), sep='\n')
-    # print(len(songs_found_in_db))
+    return songs_found_in_db
 
 
-def get_one_batch(conn, query, limit, offset):
+def find_songs_in_db(all_items: list, song_and_file_names: list):
+    song_names_only = [safn[0] for safn in song_and_file_names]
+    songs_found_in_db = set()
+    for item in all_items:
+        if item[1] in song_names_only:
+            for song_and_file in song_and_file_names:
+                if song_and_file[0] == item[1]:
+                    songs_found_in_db.add(song_and_file)  # TODO: THIS WORKS BUT IS DIRTY. STRAIGHTEN OUT SET vs. LIST
+    return songs_found_in_db
+
+
+def get_one_batch(conn, query, limit, offset) -> list:
     with conn.cursor() as cur:
         cur.execute(query, (limit, offset))
         all_items = sorted(cur.fetchall())
