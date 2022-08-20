@@ -50,7 +50,7 @@ def find_songs_in_db(all_items: list, song_and_file_names: list):
         if item[1] in song_names_only:
             for song_and_file in song_and_file_names:
                 if song_and_file[0] == item[1]:
-                    songs_found_in_db.add(song_and_file)  # TODO: THIS WORKS BUT IS DIRTY. STRAIGHTEN OUT SET vs. LIST
+                    songs_found_in_db.add(song_and_file)
     return songs_found_in_db
 
 
