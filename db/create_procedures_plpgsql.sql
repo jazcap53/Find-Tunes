@@ -2,18 +2,25 @@
 -- Andrew Jarcho
 -- 2022-05-31
 
-
+/*
+Given parameters:
+    new_discogs_release_id (which may be null),
+    new_release_string, and
+    new_track_title_str
+if new_track_title_str is not in tu_song, insert it,
+    keeping track of the new song_id
+if new_release_string is not in tu_release, insert it,
+    keeping track of the new the new release_id
+if the new song_id, new release_id combination is not
+    in tu_song_release, insert it.
+*/
 CREATE OR REPLACE PROCEDURE tu_insert_all(
     new_discogs_release_id bigint,
     new_release_string varchar,
-    -- new_track_pos_str varchar,
-    new_track_title_str varchar  -- ,
-    -- new_track_duration_str varchar
+    new_track_title_str varchar
 ) 
 AS $$
 DECLARE
-    tu_song_row tu_song%ROWTYPE;
-	tu_release_row tu_release%ROWTYPE;
     tu_song_id integer;
     tu_release_id integer;
     dummy_song tu_song%ROWTYPE;
@@ -31,7 +38,6 @@ BEGIN
         SELECT song_id INTO tu_song_id FROM tu_song WHERE tu_song.song_title = new_track_title_str;
     END IF;
 
-    -- SELECT * INTO dummy_release FROM tu_release WHERE discogs_release_id = new_discogs_release_id;
     SELECT * INTO dummy_release FROM tu_release WHERE release_string = new_release_string;
 
     IF NOT FOUND THEN
@@ -40,7 +46,6 @@ BEGIN
 	    VALUES(new_discogs_release_id, new_release_string)
 	    RETURNING release_id INTO tu_release_id;
     ELSE
-        -- SELECT release_id INTO tu_release_id FROM tu_release WHERE discogs_release_id = new_discogs_release_id;
         SELECT release_id INTO tu_release_id FROM tu_release WHERE release_string = new_release_string;
     END IF;
 	
