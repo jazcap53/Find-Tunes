@@ -40,7 +40,8 @@ BEGIN
 	    VALUES(new_discogs_release_id, new_release_string)
 	    RETURNING release_id INTO tu_release_id;
     ELSE
-        SELECT release_id INTO tu_release_id FROM tu_release WHERE discogs_release_id = new_discogs_release_id;
+        -- SELECT release_id INTO tu_release_id FROM tu_release WHERE discogs_release_id = new_discogs_release_id;
+        SELECT release_id INTO tu_release_id FROM tu_release WHERE release_string = new_release_string;
     END IF;
 	
     SELECT * INTO dummy_song_release FROM tu_song_release WHERE song_id = tu_song_id AND release_id = tu_release_id;

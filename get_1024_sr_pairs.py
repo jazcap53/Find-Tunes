@@ -11,6 +11,12 @@ from back_end.add_mp3s import get_mp3_set
 DB_BATCH_SIZE = 1024
 
 
+# def get_songs_releases_from_directory(directory: 
+#                                       str ='/home/jazcap53/Music/misc_mp3s'):
+#     songs_releases = get_mp3_set(directory)
+
+
+
 def get_song_release_ct():
     """Get and return the number of tu_song_release items in the db"""
     query= "SELECT COUNT(*) FROM tu_song_release"
@@ -37,7 +43,7 @@ def get_item_batches(directory: str ='/home/jazcap53/Music/misc_mp3s') -> set:
         while offset < max_offset:
             all_items = get_one_batch(conn, query, offset)
             if not all_items:
-                raise ValueError
+                break
             songs_found_in_db |= find_songs_in_db(all_items, song_and_file_names)
             offset += limit
             batches_looked_at += 1
@@ -45,6 +51,19 @@ def get_item_batches(directory: str ='/home/jazcap53/Music/misc_mp3s') -> set:
     print(f'Found {len(songs_found_in_db)} songs from {directory} in db')
     print(*sorted(songs_found_in_db), sep='\n')
     return songs_found_in_db
+
+
+def insert_mp3s_into_db(directory: str = '/home/jazcap53/Music/misc_mp3s'):
+    # songs_found_in_db = get_item_batches()
+    song_release_pairs = get_mp3_set(directory)
+    with connect(silent=True) as conn:
+        # for song in songs_found_in_db:
+        for song in song_release_pairs:
+            query = ("CALL tu_insert_all(%s, %s, %s)")
+            params = (None, song[1], song[0])
+            cur = conn.cursor()
+            cur.execute(query, params)
+            cur.close()
 
 
 def find_songs_in_db(all_items: list[tuple], song_and_file_names: list[tuple]):
@@ -81,4 +100,5 @@ def get_one_batch(conn, query, offset) -> list:
 if __name__ == '__main__':
     # get_song_release_ct()
     # sleep(3)
-    get_item_batches()
+    # get_item_batches()
+    insert_mp3s_into_db()
